@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# ide stuff
+.idea
+
+# next.js stuff
+node_modules/
+.next/
