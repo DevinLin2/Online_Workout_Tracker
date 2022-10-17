@@ -1,4 +1,3 @@
-from crypt import methods
 import pymysql
 from app import app
 from config import mysql
@@ -8,8 +7,11 @@ from flask import flash, request
 @app.route('/insert', methods = ['POST'])
 def insert_data():
     try:
-        data = request.json
+        print(request.method)
+        data = request.get_json(force=True)
+        print(data)
         username = data['username']
+        print(username)
         if username and request.method == 'POST':
             connection = mysql.connect()
             cursor = connection.cursor(pymysql.cursors.DictCursor)
@@ -21,9 +23,22 @@ def insert_data():
             response.status_code = 200
             return response
         else:
-            return 'Failed to add account'
+            return showMessage()
     except Exception as e:
         print(e)
     finally:
         cursor.close()
         connection.close()
+
+@app.errorhandler(404)
+def showMessage(error=None):
+    message = {
+        'status': 404,
+        'message': 'Record not found: ' + request.url,
+    }
+    respone = jsonify(message)
+    respone.status_code = 404
+    return respone
+
+if __name__ == "__main__":
+    app.run()
