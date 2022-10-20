@@ -26,16 +26,18 @@ export default function homepage() {
     const [newEvent, setNewEvent] = useState({exercise: "", date: "", sets: "", reps: ""})
     const [allEvents, setAllEvents] = useState(events)
 
-    function handleNewEvent() {
-        setAllEvents([...allEvents, newEvent])
-    }
-
-    function handleClick() {
+    function sendData() {
+        newEvent.username = "steve"
         fetch('http://localhost:5000/insert', {
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify(data)
+            body: JSON.stringify(newEvent)
         })
+    }
+
+    function handleNewEvent() {
+        setAllEvents([...allEvents, newEvent])
+        sendData();
     }
 
     return (

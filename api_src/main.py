@@ -1,3 +1,4 @@
+from pickle import TRUE
 import pymysql
 from app import app
 from config import mysql
@@ -7,19 +8,25 @@ from flask import flash, request
 @app.route('/insert', methods = ['POST'])
 def insert_data():
     try:
-        print(request.method)
-        data = request.get_json(force=True)
-        print(data)
+        data = request.get_json(force=TRUE)
         username = data['username']
+        exercise = data['exercise']
+        date = data['date']
+        sets = data['sets']
+        reps = data['reps']
         print(username)
-        if username and request.method == 'POST':
+        print(exercise)
+        print(date)
+        print(sets)
+        print(reps)
+        if username and exercise and date and sets and reps and request.method == 'POST':
             connection = mysql.connect()
             cursor = connection.cursor(pymysql.cursors.DictCursor)
-            insert_query = "INSERT INTO Account(AccID, Username) VALUES(%s, %s)"
-            data_to_insert = (1, username)
+            insert_query = "INSERT INTO Workout (username, exercise, date, sets, reps) VALUES(%s, %s, %s, %s, %s)"
+            data_to_insert = (username, exercise, date, sets, reps)
             cursor.execute(insert_query, data_to_insert)
             connection.commit()
-            response = jsonify('Account added successfully!')
+            response = jsonify('Workout added successfully!')
             response.status_code = 200
             return response
         else:
