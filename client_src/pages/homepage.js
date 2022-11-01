@@ -8,6 +8,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import WorkoutForm from "../components/WorkoutForm";
+import WorkoutFormContent from "../components/WorkoutFormContent";
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -81,6 +82,7 @@ export default function homepage() {
                 <WorkoutForm onClose={() => setShowPopup(false)} show={showPopup}>
                     Hello
                     {/* Make content of modal another react component eg. <WorkoutFormContent ...></WorkoutFormContent> */}
+                    <WorkoutFormContent></WorkoutFormContent>
                 </WorkoutForm>
             </div>
             <Calendar 
