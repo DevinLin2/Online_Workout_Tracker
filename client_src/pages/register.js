@@ -21,13 +21,12 @@ const localizer = dateFnsLocalizer({
 
 const events = []
 
-export default function login() {
+export default function register() {
     const [newEvent, setNewEvent] = useState({username: "", password: ""})
     const [allEvents, setAllEvents] = useState(events)
 
     function sendData() {
-        //newEvent.username = "steve"
-        fetch('http://localhost:5000/insert', {
+        fetch('http://localhost:5000/register', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify(newEvent)
@@ -41,34 +40,43 @@ export default function login() {
 
     return (
     <div class="form-wrapper">
-        <h1>Login</h1>
-        <form id="loginForm" >
-          <div>
+      <h1>Register</h1>
+      <form id="RegisterForm" >
+          <div class="row">
               <lable>Username: </lable>
               <input 
-               type="text" 
-               name="username"
-               value={newEvent.username} onChange={(e) => setNewEvent({...newEvent, username: e.target.value})}
-               />
-                <span class="error"></span>
-         </div>
-           <div>
+              type="text" 
+              name="username"
+              value={newEvent.username} onChange={(e) => setNewEvent({...newEvent, username: e.target.value})}
+              />
+               <span class="error"></span>
+           </div>
+           <div class="row">
                <lable>Password: </lable>
                <input 
+               type="password" 
+               name="password"
+               value={newEvent.password} onChange={(e) => setNewEvent({...newEvent, password: e.target.value})}
+               />
+                <span class="error"></span>
+            </div>
+              <div class="row">
+                  <lable>Confirm Password: </lable>
+                <input 
                 type="password" 
-                name="password"
-                value={newEvent.exercise} password={(e) => setNewEvent({...newEvent, password: e.target.value})}
+                name="password_confirm"
+                //For now, do nothing
                 />
-            <span class="error"></span>
-        </div>
+                 <span class="error"></span>
+             </div>
+               <div class="row">
+                   <input 
+                   type="submit"
+                   onClick={handleNewEvent}
+                   />
+               </div>
 
-        <div>
-            <input 
-                type="submit"
-                />
-        </div>
-
-        </form>
+       </form>
     </div>
     );
 }

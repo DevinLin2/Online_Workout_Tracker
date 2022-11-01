@@ -34,6 +34,33 @@ def insert_data():
     except Exception as e:
         print(e)
     finally:
+        #cursor.close()
+        connection.close()
+
+@app.route('/register', methods = ['POST'])
+def register():
+    try:
+        data = request.get_json(force=TRUE)
+        username = data['username']
+        password = data['password']
+        print(username)
+        print(password)
+
+        if username and password and request.method == 'POST':
+            connection = mysql.connect()
+            cursor = connection.cursor(pymysql.cursors.DictCursor)
+            insert_query = "INSERT INTO user (username, password) VALUES(%s, %s)"
+            data_to_insert = (username, password)
+            cursor.execute(insert_query, data_to_insert)
+            connection.commit()
+            response = jsonify('Account created successfully!')
+            response.status_code = 200
+            return response
+        else:
+            return showMessage()
+    except Exception as e:
+        print(e)
+    finally:
         cursor.close()
         connection.close()
 

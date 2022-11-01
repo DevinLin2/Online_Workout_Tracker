@@ -12,7 +12,12 @@ try:
                         sets            int(5)          NULL,
                         reps            int(5)          NULL,
                         PRIMARY KEY (username))"""
+    user_table = """CREATE TABLE User (
+                        username        varchar(30)     NOT NULL,
+                        password        varchar(30)     NOT NULL,
+                        PRIMARY KEY (username))"""
     cursor.execute(account_table)
+    cursor.execute(user_table)
     connection.commit()
 
 except Exception as e:
