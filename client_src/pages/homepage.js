@@ -7,6 +7,7 @@ import getDay from "date-fns/getDay";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import WorkoutForm from "../components/WorkoutForm";
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -21,11 +22,15 @@ const localizer = dateFnsLocalizer({
 })
 
 const events = []
+const exerciseID = 0; // We need a way to pull the most recent id 
+
 
 export default function homepage() {
     const [newEvent, setNewEvent] = useState({exercise: "", date: "", sets: "", reps: ""})
     const [allEvents, setAllEvents] = useState(events)
-
+    const [showPopup, setShowPopup] = useState(false);
+    //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
+    // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
     function sendData() {
         newEvent.username = "steve"
         fetch('http://localhost:5000/insert', {
@@ -36,7 +41,8 @@ export default function homepage() {
     }
 
     function handleNewEvent() {
-        setAllEvents([...allEvents, newEvent])
+        setAllEvents([...allEvents, newEvent]);
+        // console.log(newEvent.sets);
         sendData();
     }
 
@@ -70,12 +76,20 @@ export default function homepage() {
                 />
                 <button style={{marginTop: "10px"}} onClick={handleNewEvent}>Enter</button>
             </div>
+            <div id="workout-form-root">
+                <button onClick={() => setShowPopup(true)}>Open Workout Form</button>
+                <WorkoutForm onClose={() => setShowPopup(false)} show={showPopup}>
+                    Hello
+                    {/* Make content of modal another react component eg. <WorkoutFormContent ...></WorkoutFormContent> */}
+                </WorkoutForm>
+            </div>
             <Calendar 
                 localizer={localizer} 
-                events={events}
+                events={allEvents}
+                titleAccessor="exercise"
                 startAccessor="date" 
                 endAccessor="date" 
-                style={{height: 500, margin: "50px"}}
+                style={{height: 500, margin: "50px", "z-index": -1}}
             />
         </div>
     );
