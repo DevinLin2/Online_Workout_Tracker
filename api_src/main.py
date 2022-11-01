@@ -37,6 +37,66 @@ def insert_data():
         cursor.close()
         connection.close()
 
+
+@app.route('/update', methods = ['POST'])
+def update_data():
+    try:
+        data = request.get_json(force=TRUE)
+        username = data['username']  #Username
+        input = data['input']     #What data that user input
+        col = data['col']   #What colun I need to change
+
+
+        print(username)
+        print(input)
+        print(col)
+        if username and input and col and request.method == 'POST':
+            connection = mysql.connect()
+            cursor = connection.cursor(pymysql.cursors.DictCursor)
+            insert_query = "UPDATE Workout SET %s = %s WHERE username = %s"
+            data_to_insert = (col, input, username)
+            cursor.execute(insert_query, data_to_insert)
+            connection.commit()
+            response = jsonify('Data changed successfully!')
+            response.status_code = 200
+            return response
+        else:
+            return showMessage()
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        connection.close()
+
+@app.route('/delete', methods = ['POST'])
+def delete_data():
+    try:
+        data = request.get_json(force=TRUE)
+        
+        col = data['col']   #What colun I need to delete
+        select = data['input']     #What data that user select
+
+        print(input)
+        print(col)
+        
+        if  select and col and request.method == 'POST':
+            connection = mysql.connect()
+            cursor = connection.cursor(pymysql.cursors.DictCursor)
+            insert_query = "DELETE FROM Workout WHERE %s = %s"
+            data_to_insert = (col, select)
+            cursor.execute(insert_query, data_to_insert)
+            connection.commit()
+            response = jsonify('Data delete successfully!')
+            response.status_code = 200
+            return response
+        else:
+            return showMessage()
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        connection.close()
+
 @app.errorhandler(404)
 def showMessage(error=None):
     message = {
