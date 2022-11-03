@@ -11,7 +11,7 @@ function WorkoutForm({ children }) {
     return (
         <div>
             <Button variant="primary" onClick={handleShow}>
-                Add Workout
+                Create Workout
             </Button>
             <Modal show={show} onHide={handleClose} dialogClassName="workoutModal">
                 <Modal.Header closeButton>

@@ -13,6 +13,7 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import moment from 'moment';
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -31,31 +32,25 @@ const exerciseID = 0; // We need a way to pull the most recent id
 
 
 export default function homepage() {
-    const [newEvent, setNewEvent] = useState({exercise: "", date: "", sets: "", reps: ""})
-    const [allEvents, setAllEvents] = useState(events)
-    const [title, setTitle] = useState("");
+    const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
+    const [newExercise, setNewExercise] = useState({exercise: "", sets: "", reps: ""});
+    const [allEvents, setAllEvents] = useState(events);
     //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
     // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
     function sendData() {
-        newEvent.username = "steve"
+        newExercise.username = "steve";
         fetch('http://localhost:5000/insert', {
             method: 'POST',
             mode: 'cors',
-            body: JSON.stringify(newEvent)
-        })
+            body: JSON.stringify(newExercise)
+        });
     }
 
-    function handleNewEvent(e) {
+    function handleNewWorkout(e) {
         e.preventDefault();
-        const date = new Date(newEvent.date);
-        console.log(date);
-        const formattedDate = `${date.getFullYear()}/${date.getMonth()}/${date.getDay() + 1}`;
-        console.log(formattedDate);
-        const newDate = new Date(formattedDate);
-        console.log(newDate);
-        newEvent.date = newDate;
-        setAllEvents([...allEvents, newEvent]);
-        console.log(newEvent.date);
+        let date = newWorkout.date;
+        newWorkout.date = moment(date).format("YYYY/MM/DD");
+        setAllEvents([...allEvents, newWorkout]);
         // sendData();
     }
 
@@ -69,14 +64,13 @@ export default function homepage() {
                         <Col xs={8}>
                             <Form.Group className="mb-3" controlId="title">
                                 <Form.Label>Workout name:</Form.Label>
-                                <Form.Control type="text" placeholder="Enter workout name..."/>
+                                <Form.Control type="text" placeholder="Enter workout name..." value={newWorkout.title} onChange={(e) => setNewWorkout({...newWorkout, title: e.target.value})}/>
                             </Form.Group>
                         </Col>
                         <Col xs={4}>
                             <Form.Group className="mb-3" controlId="date">
                                 <Form.Label>Date:</Form.Label>
-                                {/* <DatePicker placeholderText="Date" selected={newEvent.date} onChange={(date) => setNewEvent({...newEvent, date})}/> */}
-                                <Form.Control type="date" selected={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}/>
+                                <Form.Control type="date" selected={newWorkout.date} onChange={(e) => setNewWorkout({...newWorkout, date: e.target.value})}/>
                             </Form.Group>
                         </Col>
                     </Row>
@@ -84,30 +78,30 @@ export default function homepage() {
                         <Col xs={4}>
                             <Form.Group className="mb-3" controlId="exercise">
                                 <Form.Label>Exercise:</Form.Label>
-                                <Form.Control type="text" placeholder="Enter exercise..." value={newEvent.exercise} onChange={(e) => setNewEvent({...newEvent, exercise: e.target.value})}/>
+                                <Form.Control type="text" placeholder="Enter exercise..." value={newExercise.exercise} onChange={(e) => setNewExercise({...newExercise, exercise: e.target.value})}/>
                             </Form.Group>
                         </Col>
                         <Col xs={4}>
                             <Form.Group className="mb-3" controlId="sets">
                                 <Form.Label>Sets done:</Form.Label>
-                                <Form.Control type="text" placeholder="Enter sets done..." value={newEvent.sets} onChange={(e) => setNewEvent({...newEvent, sets: e.target.value})}/>
+                                <Form.Control type="text" placeholder="Enter sets done..." value={newExercise.sets} onChange={(e) => setNewExercise({...newExercise, sets: e.target.value})}/>
                             </Form.Group>
                         </Col>
                         <Col xs={4}>
                             <Form.Group className="mb-3" controlId="reps">
                                 <Form.Label>Reps done:</Form.Label>
-                                <Form.Control type="text" placeholder="Enter reps done..." value={newEvent.reps} onChange={(e) => setNewEvent({...newEvent, reps: e.target.value})}/>
+                                <Form.Control type="text" placeholder="Enter reps done..." value={newExercise.reps} onChange={(e) => setNewExercise({...newExercise, reps: e.target.value})}/>
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Button onClick={handleNewEvent}>Enter</Button>
+                    <Button onClick={handleNewWorkout}>Enter</Button>
                 </Container>
             </Form>
             </WorkoutForm>
             <Calendar 
                 localizer={localizer} 
                 events={allEvents}
-                titleAccessor="exercise"
+                titleAccessor="title"
                 startAccessor="date" 
                 endAccessor="date" 
                 style={{height: 500, margin: "50px", "z-index": -1}}
