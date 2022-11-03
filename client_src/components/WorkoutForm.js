@@ -1,39 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
-// import styled from "styled-components";
+import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-function WorkoutForm({ show, onClose, children, title }) {
-    const [isBrowser, setIsBrowser] = useState(false);
+function WorkoutForm({ children }) {
+    const [show, setShow] = useState(false);
 
-    useEffect(() => {
-        setIsBrowser(true);
-    }, []);
-    
-    const handleCloseClick = (e) => {
-        e.preventDefault();
-        onClose();
-    }
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
-    const workoutFormContent = show ? (
-        <div id="StyledModalOverlay">
-            <div id="StyledModal">
-                <div id="StyledModalHeader">
-                    <a href="#" onClick={handleCloseClick}>x</a>
-                </div>
-                {title && <div id="StyledModalTitle">{title}</div>}
-                <div id="StyledModalBody">{children}</div>
-            </div>
+    return (
+        <div>
+            <Button variant="primary" onClick={handleShow}>
+                Add Workout
+            </Button>
+            <Modal show={show} onHide={handleClose} dialogClassName="workoutModal">
+                <Modal.Header closeButton>
+                    <Modal.Title>Today's Workout</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {children}
+                </Modal.Body>
+            </Modal>
         </div>
-    ) : null;
-
-    if (isBrowser) {
-        return ReactDOM.createPortal(
-            workoutFormContent,
-            document.getElementById("workout-form-root")
-        );
-    } else {
-        return null;
-    }
+    )
 };
 
 export default WorkoutForm;
