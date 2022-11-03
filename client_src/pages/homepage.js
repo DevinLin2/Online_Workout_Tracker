@@ -8,7 +8,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import WorkoutForm from "../components/WorkoutForm";
-import WorkoutFormContent from "../components/WorkoutFormContent";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -29,7 +33,7 @@ const exerciseID = 0; // We need a way to pull the most recent id
 export default function homepage() {
     const [newEvent, setNewEvent] = useState({exercise: "", date: "", sets: "", reps: ""})
     const [allEvents, setAllEvents] = useState(events)
-    const [showPopup, setShowPopup] = useState(false);
+    const [title, setTitle] = useState("");
     //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
     // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
     function sendData() {
@@ -41,50 +45,65 @@ export default function homepage() {
         })
     }
 
-    function handleNewEvent() {
+    function handleNewEvent(e) {
+        e.preventDefault();
+        const date = new Date(newEvent.date);
+        console.log(date);
+        const formattedDate = `${date.getFullYear()}/${date.getMonth()}/${date.getDay() + 1}`;
+        console.log(formattedDate);
+        const newDate = new Date(formattedDate);
+        console.log(newDate);
+        newEvent.date = newDate;
         setAllEvents([...allEvents, newEvent]);
-        // console.log(newEvent.sets);
-        sendData();
+        console.log(newEvent.date);
+        // sendData();
     }
 
     return (
         <div>
             <h1>Workout Calendar</h1>
-            <div>
-                <input 
-                    type="text" 
-                    placeholder="Add Exercise" 
-                    style={{width: "20%", marginRight: "10px"}}
-                    value={newEvent.exercise} onChange={(e) => setNewEvent({...newEvent, exercise: e.target.value})}
-                />
-                <input 
-                    type="text" 
-                    placeholder="Sets Done" 
-                    // style={{width: "20%", marginRight: "10px"}}
-                    value={newEvent.sets} onChange={(e) => setNewEvent({...newEvent, sets: e.target.value})}
-                />
-                <input 
-                    type="text" 
-                    placeholder="Reps Done" 
-                    // style={{width: "20%", marginRight: "10px"}}
-                    value={newEvent.reps} onChange={(e) => setNewEvent({...newEvent, reps: e.target.value})}
-                />
-                <DatePicker
-                    placeholderText="Date"
-                    style={{marginRight: "10px"}}
-                    selected={newEvent.date}
-                    onChange={(date) => setNewEvent({...newEvent, date})}
-                />
-                <button style={{marginTop: "10px"}} onClick={handleNewEvent}>Enter</button>
-            </div>
-            <div id="workout-form-root">
-                <button onClick={() => setShowPopup(true)}>Open Workout Form</button>
-                <WorkoutForm onClose={() => setShowPopup(false)} show={showPopup}>
-                    Hello
-                    {/* Make content of modal another react component eg. <WorkoutFormContent ...></WorkoutFormContent> */}
-                    <WorkoutFormContent></WorkoutFormContent>
-                </WorkoutForm>
-            </div>
+            <WorkoutForm>
+            <Form>
+                <Container>
+                    <Row>
+                        <Col xs={8}>
+                            <Form.Group className="mb-3" controlId="title">
+                                <Form.Label>Workout name:</Form.Label>
+                                <Form.Control type="text" placeholder="Enter workout name..."/>
+                            </Form.Group>
+                        </Col>
+                        <Col xs={4}>
+                            <Form.Group className="mb-3" controlId="date">
+                                <Form.Label>Date:</Form.Label>
+                                {/* <DatePicker placeholderText="Date" selected={newEvent.date} onChange={(date) => setNewEvent({...newEvent, date})}/> */}
+                                <Form.Control type="date" selected={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}/>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={4}>
+                            <Form.Group className="mb-3" controlId="exercise">
+                                <Form.Label>Exercise:</Form.Label>
+                                <Form.Control type="text" placeholder="Enter exercise..." value={newEvent.exercise} onChange={(e) => setNewEvent({...newEvent, exercise: e.target.value})}/>
+                            </Form.Group>
+                        </Col>
+                        <Col xs={4}>
+                            <Form.Group className="mb-3" controlId="sets">
+                                <Form.Label>Sets done:</Form.Label>
+                                <Form.Control type="text" placeholder="Enter sets done..." value={newEvent.sets} onChange={(e) => setNewEvent({...newEvent, sets: e.target.value})}/>
+                            </Form.Group>
+                        </Col>
+                        <Col xs={4}>
+                            <Form.Group className="mb-3" controlId="reps">
+                                <Form.Label>Reps done:</Form.Label>
+                                <Form.Control type="text" placeholder="Enter reps done..." value={newEvent.reps} onChange={(e) => setNewEvent({...newEvent, reps: e.target.value})}/>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Button onClick={handleNewEvent}>Enter</Button>
+                </Container>
+            </Form>
+            </WorkoutForm>
             <Calendar 
                 localizer={localizer} 
                 events={allEvents}
@@ -96,4 +115,3 @@ export default function homepage() {
         </div>
     );
 }
-
