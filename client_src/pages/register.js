@@ -1,27 +1,8 @@
 import { useState } from "react";
-import { dateFnsLocalizer } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import "react-datepicker/dist/react-datepicker.css";
-
-const locales = {
-    "en-US": require("date-fns/locale/en-US")
-}
-
-const localizer = dateFnsLocalizer({
-    format,
-    parse,
-    startOfWeek,
-    getDay,
-    locales
-})
 
 const events = []
 
-export default function register() {
+function Register() {
     const [newEvent, setNewEvent] = useState({username: "", password: ""})
     const [allEvents, setAllEvents] = useState(events)
 
@@ -39,45 +20,46 @@ export default function register() {
     }
 
     return (
-    <div class="form-wrapper">
-      <h1>Register</h1>
-      <form id="RegisterForm" >
-          <div class="row">
-              <lable>Username: </lable>
-              <input 
-              type="text" 
-              name="username"
-              value={newEvent.username} onChange={(e) => setNewEvent({...newEvent, username: e.target.value})}
-              />
-               <span class="error"></span>
-           </div>
-           <div class="row">
-               <lable>Password: </lable>
-               <input 
-               type="password" 
-               name="password"
-               value={newEvent.password} onChange={(e) => setNewEvent({...newEvent, password: e.target.value})}
-               />
-                <span class="error"></span>
-            </div>
-              <div class="row">
-                  <lable>Confirm Password: </lable>
-                <input 
-                type="password" 
-                name="password_confirm"
-                //For now, do nothing
-                />
-                 <span class="error"></span>
-             </div>
-               <div class="row">
-                   <input 
-                   type="submit"
-                   onClick={handleNewEvent}
-                   />
-               </div>
+    <div className="login">
+        <h1>Online Workout Tracker</h1>
+        <h2>Register</h2>
+        <form className="form">
+                    <p>Username</p>
+                    <div className="formItem">
+                        <input 
+                            type="text" 
+                            placeholder="Enter Username(E-mail Address/Phone number)" 
+                            value={newEvent.username} onChange={(e) => setNewEvent({...newEvent, username: e.target.value})}
+                        />
+                    <span class="error"></span>
+                    </div>
 
-       </form>
+                    <p>Password</p>
+                    <div className="formItem">
+                        <input 
+                            type="text" 
+                            placeholder="Enter Password" 
+                            value={newEvent.exercise} onChange={(e) => setNewEvent({...newEvent, password: e.target.value})}
+                        />
+                    <span class="error"></span>
+                    </div>
+
+                    <p>Re-enter Password</p>
+                    <div className="formItem">
+                        <input 
+                            type="text" 
+                            placeholder="Re-enter Password" 
+                            value={newEvent.exercise} onChange={(e) => setNewEvent({...newEvent, password: e.target.value})}
+                        />
+                    <span class="error"></span>
+                    </div>
+
+                    <div className="formItemBtn">
+                        <bottom className="loginBtn" onClick={()=>setShowPopup(true)}>Register</bottom>
+                    </div>
+            </form>
     </div>
     );
 }
 
+export default Register;
