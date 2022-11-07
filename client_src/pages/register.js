@@ -55,7 +55,7 @@ function Register() {
                     </div>
 
                     <div className="formItemBtn">
-                        <bottom className="loginBtn" onClick={()=>setShowPopup(true)}>Register</bottom>
+                        <bottom className="loginBtn" onClick={()=>handleNewEvent}>Register</bottom>
                     </div>
             </form>
     </div>
