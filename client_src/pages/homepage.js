@@ -42,15 +42,18 @@ export default function homepage() {
     // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
 
-    const handleWorkoutFormClose = () => setShowWorkoutForm(false);
+    const handleWorkoutFormClose = () => {
+        setShowWorkoutForm(false);
+        setNewExercise([{exercise: "", sets: "", reps: ""}]);
+        setNewWorkout({title: "", date: "", exercises: []});
+    }
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
 
     function sendData() {
-        newExercise.username = "steve";
-        fetch('http://localhost:5000/insert', {
+        fetch('http://localhost:3000/api/workoutHandler', {
             method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify(newExercise)
+            // mode: 'cors',
+            body: JSON.stringify(newWorkout)
         });
     }
 
@@ -60,12 +63,10 @@ export default function homepage() {
         newWorkout.date = moment(date).format("YYYY/MM/DD");
         newWorkout.exercises = newExercise;
         setAllEvents([...allEvents, newWorkout]);
-        // sendData();
+        sendData();
         // console.log(newWorkout.title);
         // console.log(newWorkout.date);
         // console.log(newWorkout.exercises);
-        setNewExercise([{exercise: "", sets: "", reps: ""}]);
-        setNewWorkout({title: "", date: "", exercises: []});
         handleWorkoutFormClose();
     }
 
@@ -78,8 +79,9 @@ export default function homepage() {
     function addFields() {
         let newField = {exercise: "", sets: "", reps: ""};
         setNewExercise([...newExercise, newField]);
-
     }
+
+    // ADD A FUNCTION TO REMOVE FIELDS USING ARRAY.POP()
 
     return (
         <div>
