@@ -81,6 +81,11 @@ export default function homepage() {
         setNewExercise([...newExercise, newField]);
     }
 
+    function removeFields() {
+        let data = [...newExercise];
+        data.pop();
+        setNewExercise(data);
+    }
     // ADD A FUNCTION TO REMOVE FIELDS USING ARRAY.POP()
 
     return (
@@ -135,10 +140,13 @@ export default function homepage() {
                                 )
                             })}
                             <Row>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Button variant="primary" onClick={addFields}>Add exercise</Button>
                                 </Col>
-                                <Col xs={{ span: 4, offset: 4 }}>
+                                <Col xs={5}>
+                                    <Button variant="danger" onClick={removeFields}>Remove exercise</Button>
+                                </Col>
+                                <Col xs={4}>
                                     <Button  className="float-end" variant="success" onClick={handleNewWorkout}>Enter</Button>
                                 </Col>
                             </Row>
