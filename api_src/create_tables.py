@@ -7,6 +7,7 @@ try:
     cursor = connection.cursor(pymysql.cursors.DictCursor)
     workout_table = """CREATE TABLE Workout (
                         workoutID       int(5)              NOT NULL AUTO_INCREMENT,
+                        username        varchar(30)         NULL,
                         title           varchar(30)         NULL,
                         date            varchar(30)         NULL,
                         exercises       JSON                NULL,
