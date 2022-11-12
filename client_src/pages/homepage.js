@@ -32,7 +32,8 @@ const events = []
 const exerciseID = 0; // We need a way to pull the most recent id 
 
 
-export default function homepage() {
+export default function homepage({ props }) {
+    console.log(props[0]);
     const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
     const [newExercise, setNewExercise] = useState([
         {exercise: "", sets: "", reps: ""}
@@ -50,6 +51,7 @@ export default function homepage() {
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
 
     function sendData() {
+        newWorkout.username = "admin";
         fetch('http://localhost:3000/api/workoutHandler', {
             method: 'POST',
             // mode: 'cors',
@@ -86,7 +88,6 @@ export default function homepage() {
         data.pop();
         setNewExercise(data);
     }
-    // ADD A FUNCTION TO REMOVE FIELDS USING ARRAY.POP()
 
     return (
         <div>
@@ -164,4 +165,14 @@ export default function homepage() {
             />
         </div>
     );
+}
+
+export async function getStaticProps() {
+    const res = await fetch('http://localhost:3000/api/workoutHandler');
+    const props = await res.json();
+    return {
+        props: {
+            props,
+        },
+    }
 }
