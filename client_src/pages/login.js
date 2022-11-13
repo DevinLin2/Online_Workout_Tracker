@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Button from 'react-bootstrap/Button';
 import { Link, Router, Route, Routes } from "react-router-dom";
 import Register from "./register";
 
@@ -47,9 +48,9 @@ export default function loginpage() {
                     </div>
 
                     <div className="formItemBtn">
-                        <bottom className="loginBtn" onClick={()=>handleNewEvent}>Login</bottom>
+                        <Button className="loginBtn" onClick={()=>handleNewEvent}>Login</Button>
                     </div>
-  
+
             </form>
         </div>
     );
