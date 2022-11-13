@@ -32,8 +32,8 @@ const events = []
 const exerciseID = 0; // We need a way to pull the most recent id 
 
 
-export default function homepage({ props }) {
-    console.log(props[0]);
+export default function Homepage({ props }) {
+    console.log(props);
     const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
     const [newExercise, setNewExercise] = useState([
         {exercise: "", sets: "", reps: ""}
