@@ -49,15 +49,6 @@ export default function loginpage() {
                     <div className="formItemBtn">
                         <bottom className="loginBtn" onClick={()=>handleNewEvent}>Login</bottom>
                     </div>
-                    
-                    <Router>
-                        <div>
-                        <Link to="/registerpage">Register</Link>
-                        <Routes>
-                            <Route path="/registerpage" element={<Register />} />
-                        </Routes>
-                        </div>
-                    </Router>
   
             </form>
         </div>
