@@ -1,7 +1,4 @@
 import { useState } from "react";
-import Button from 'react-bootstrap/Button';
-import { Link, Router, Route, Routes } from "react-router-dom";
-import Register from "./register";
 
 const events = []
 
