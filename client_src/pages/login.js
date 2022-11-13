@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const events = []
 
-export default function loginpage() {
+function Login() {
     const [newEvent, setNewEvent] = useState({username: "", password: ""})
     const [allEvents, setAllEvents] = useState(events)
 
@@ -26,7 +26,8 @@ export default function loginpage() {
             <form className="form">
                     <p>Username</p>
                     <div className="formItem">
-                        <input 
+                        <input
+                            label="Username" 
                             type="text" 
                             placeholder="Enter Username" 
                             value={newEvent.username} onChange={(e) => setNewEvent({...newEvent, username: e.target.value})}
@@ -52,3 +53,5 @@ export default function loginpage() {
         </div>
     );
 }
+
+export default Login;
