@@ -48,7 +48,7 @@ export default function loginpage() {
                     </div>
 
                     <div className="formItemBtn">
-                        <Button className="loginBtn" onClick={()=>handleNewEvent}>Login</Button>
+                        <button className="loginBtn" onClick={()=>handleNewEvent}>Login</button>
                     </div>
 
             </form>
