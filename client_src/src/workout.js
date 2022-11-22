@@ -4,7 +4,7 @@ const mysqlConfig = {
     host: "127.0.0.1",
     port: 3306, // could remove this if bugs
     user: "root",
-    password: "Destroyer21823iw.",
+    password: "",
     database: "workout",
 };
 
