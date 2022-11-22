@@ -4,6 +4,7 @@
     "test": "jest --coverage"
   },
   "dependencies": {
+    "@sentry/nextjs": "^7.19.0",
     "bootstrap": "^5.2.2",
     "date-fns": "^2.29.3",
     "moment": "^2.29.4",

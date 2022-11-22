@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
@@ -33,7 +33,7 @@ const exerciseID = 0; // We need a way to pull the most recent id
 
 
 export default function Homepage({ props }) {
-    console.log(props);
+    // console.log(Object.entries(props));
     const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
     const [newExercise, setNewExercise] = useState([
         {exercise: "", sets: "", reps: ""}
@@ -49,6 +49,20 @@ export default function Homepage({ props }) {
         setNewWorkout({title: "", date: "", exercises: []});
     }
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
+
+    useEffect(() => {
+        const importedData = Object.entries(props);
+        importedData.pop();
+        const importedExercisesArray = [];
+        for (let i = 0; i < importedData.length; i++) {
+            const newData = {};
+            newData.title = importedData[i][1].title;
+            newData.date = importedData[i][1].date;
+            newData.exercises = importedData[i][1].exercises;
+            importedExercisesArray.push(newData);
+        }
+        setAllEvents(importedExercisesArray);
+    }, []);
 
     function sendData() {
         newWorkout.username = "admin";
