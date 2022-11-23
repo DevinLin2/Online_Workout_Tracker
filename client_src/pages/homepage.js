@@ -33,21 +33,6 @@ const localizer = dateFnsLocalizer({
 const events = []
 
 export default function Homepage({ props }) {
-    const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
-    const [newExercise, setNewExercise] = useState([
-        {exercise: "", sets: "", reps: ""}
-    ]);
-    const [allEvents, setAllEvents] = useState(events);
-    //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
-    // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
-    const [showWorkoutForm, setShowWorkoutForm] = useState(false);
-
-    const handleWorkoutFormClose = () => {
-        setShowWorkoutForm(false);
-        setNewExercise([{exercise: "", sets: "", reps: ""}]);
-        setNewWorkout({title: "", date: "", exercises: []});
-    }
-    const handleWorkoutFormShow = () => setShowWorkoutForm(true);
 
     useEffect(() => {
         const importedData = Object.entries(props);
@@ -62,6 +47,30 @@ export default function Homepage({ props }) {
         }
         setAllEvents(importedExercisesArray);
     }, []);
+
+    const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
+    const [newExercise, setNewExercise] = useState([
+        {exercise: "", sets: "", reps: ""}
+    ]);
+    const [allEvents, setAllEvents] = useState(events);
+    //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
+    // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
+    const [showWorkoutForm, setShowWorkoutForm] = useState(false);
+    const [showWorkoutEditForm, setShowWorkoutEditForm] = useState(false);
+
+    const handleWorkoutFormClose = () => {
+        setShowWorkoutForm(false);
+        setNewExercise([{exercise: "", sets: "", reps: ""}]);
+        setNewWorkout({title: "", date: "", exercises: []});
+    }
+
+    const handleWorkoutFormShow = () => setShowWorkoutForm(true);
+
+    const handleWorkoutEditFormShow = () => setShowWorkoutEditForm(true);
+
+    const handleWorkoutEditFormClose = () => {
+        setShowWorkoutEditForm(false);
+    }
 
     function sendData() {
         newWorkout.username = "admin";
@@ -122,6 +131,7 @@ export default function Homepage({ props }) {
                 titleAccessor="title"
                 startAccessor="date" 
                 endAccessor="date" 
+                onSelectEvent={(e) => handleSelectEvent(e)}
                 style={{height: 500, margin: "50px", "z-index": -1}}
             />
         </div>
