@@ -41,6 +41,7 @@ export default async function handler(req, res) {
             result = await deleteWorkout(username, oldTitle, oldDate);
             res.json({...result, message: `workout deleted`});
             res.statusCode = 200;
+            break;
         default:
             res.status(405).end(`Method ${method} Not Allowed`);
     }
