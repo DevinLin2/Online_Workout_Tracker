@@ -17,7 +17,8 @@ export default function Popup({
     handleExerciseForm, 
     addFields, 
     removeFields, 
-    handleSubmit
+    handleSubmit,
+    handleDelete
 }) {
     return (
         <Modal show={show} onHide={onHide} dialogClassName="workoutModal">
@@ -76,7 +77,8 @@ export default function Popup({
                                 <Button variant="danger" onClick={removeFields}>Remove exercise</Button>
                             </Col>
                             <Col xs={4}>
-                                <Button  className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
+                                <Button className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
+                                {isEditModal && <Button className="float-end" variant="danger" onClick={handleDelete}>Delete Workout</Button>}
                             </Col>
                         </Row>
                     </Container>

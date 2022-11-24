@@ -94,6 +94,16 @@ export default function Homepage({ props }) {
         });
     }
 
+    function deleteData() {
+        newWorkout.username = "admin";
+        newWorkout.oldDate = oldDate;
+        newWorkout.oldTitle = oldTitle;
+        fetch('http://localhost:3000/api/workoutHandler', {
+            method: 'DELETE',
+            body: JSON.stringify(newWorkout)
+        });
+    }
+
     function handleNewWorkout(e) {
         e.preventDefault();
         let date = newWorkout.date;
@@ -103,20 +113,31 @@ export default function Homepage({ props }) {
         sendData();
         handleWorkoutFormClose();
     }
+
     function handleUpdateWorkout(e) {
         e.preventDefault();
         let date = newWorkout.date;
         newWorkout.date = moment(date).format("YYYY/MM/DD");
         newWorkout.exercises = newExercise;
+        deleteSelectedWorkout();
+        setAllEvents([...allEvents, newWorkout]);
+        updateData();
+        handleWorkoutEditFormClose();
+    }
+
+    function handleDeleteWorkout() {
+        deleteSelectedWorkout();
+        deleteData();
+        handleWorkoutEditFormClose();
+    }
+
+    function deleteSelectedWorkout() {
         for (let i = 0; i < allEvents.length; i++) {
             if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate) {
                 allEvents.splice(i, 1);
                 break;
             }
         }
-        setAllEvents([...allEvents, newWorkout]);
-        updateData();
-        handleWorkoutEditFormClose();
     }
 
     function handleExerciseForm(index, event) {
@@ -172,6 +193,7 @@ export default function Homepage({ props }) {
                 addFields={addFields}
                 removeFields={removeFields}
                 handleSubmit={handleUpdateWorkout}
+                handleDelete={handleDeleteWorkout}
             />
             <Calendar 
                 localizer={localizer} 

@@ -1,4 +1,4 @@
-import {createWorkout, getWorkout, updateWorkout} from "../../src/workout";
+import {createWorkout, getWorkout, updateWorkout, deleteWorkout} from "../../src/workout";
 
 export default async function handler(req, res) {
     const method = req.method;
@@ -7,6 +7,8 @@ export default async function handler(req, res) {
     let title;
     let date;
     let exercises;
+    let oldDate;
+    let oldTitle;
     if (method != 'GET') {
         data = JSON.parse(req.body);
         username = data.username;
@@ -27,12 +29,18 @@ export default async function handler(req, res) {
             res.statusCode = 200;
             break;
         case 'PUT':
-            const oldDate = data.oldDate;
-            const oldTitle = data.oldTitle;
+            oldDate = data.oldDate;
+            oldTitle = data.oldTitle;
             result = await updateWorkout(username, title, date, exercises, oldTitle, oldDate);
             res.json({...result, message: `workout updated`});
             res.statusCode = 200;
             break;
+        case 'DELETE':
+            oldDate = data.oldDate;
+            oldTitle = data.oldTitle;
+            result = await deleteWorkout(username, oldTitle, oldDate);
+            res.json({...result, message: `workout deleted`});
+            res.statusCode = 200;
         default:
             res.status(405).end(`Method ${method} Not Allowed`);
     }

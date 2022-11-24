@@ -47,10 +47,24 @@ const updateWorkout = async (username, title, date, exercises, oldTitle, oldDate
     }
 }
 
+const deleteWorkout = async (username, oldTitle, oldDate) => {
+    try {
+        const connection = await mysql.createConnection(mysqlConfig);
+        const [rows, fields] = await connection.execute(
+            `DELETE FROM workout WHERE username = "${username}" AND title = "${oldTitle}" AND date = "${oldDate}";`
+        );
+        connection.end();
+        return rows;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 const workout = {
     createWorkout,
     getWorkout,
     updateWorkout,
+    deleteWorkout,
 };
 
 module.exports = workout;
