@@ -31,6 +31,8 @@ const localizer = dateFnsLocalizer({
 })
 
 const events = []
+let oldDate;
+let oldTitle;
 
 export default function Homepage({ props }) {
 
@@ -82,6 +84,16 @@ export default function Homepage({ props }) {
         });
     }
 
+    function updateData() {
+        newWorkout.username = "admin";
+        newWorkout.oldDate = oldDate;
+        newWorkout.oldTitle = oldTitle;
+        fetch('http://localhost:3000/api/workoutHandler', {
+            method: 'PUT',
+            body: JSON.stringify(newWorkout)
+        });
+    }
+
     function handleNewWorkout(e) {
         e.preventDefault();
         let date = newWorkout.date;
@@ -90,6 +102,21 @@ export default function Homepage({ props }) {
         setAllEvents([...allEvents, newWorkout]);
         sendData();
         handleWorkoutFormClose();
+    }
+    function handleUpdateWorkout(e) {
+        e.preventDefault();
+        let date = newWorkout.date;
+        newWorkout.date = moment(date).format("YYYY/MM/DD");
+        newWorkout.exercises = newExercise;
+        for (let i = 0; i < allEvents.length; i++) {
+            if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate) {
+                allEvents.splice(i, 1);
+                break;
+            }
+        }
+        setAllEvents([...allEvents, newWorkout]);
+        updateData();
+        handleWorkoutEditFormClose();
     }
 
     function handleExerciseForm(index, event) {
@@ -113,6 +140,8 @@ export default function Homepage({ props }) {
         handleWorkoutEditFormShow();
         setNewWorkout(e);
         setNewExercise(e.exercises);
+        oldDate = e.date;
+        oldTitle = e.title;
     }
     return (
         <div>
@@ -142,7 +171,7 @@ export default function Homepage({ props }) {
                 handleExerciseForm={handleExerciseForm}
                 addFields={addFields}
                 removeFields={removeFields}
-                handleSubmit={handleNewWorkout} // this needs to be its own submit
+                handleSubmit={handleUpdateWorkout}
             />
             <Calendar 
                 localizer={localizer} 
