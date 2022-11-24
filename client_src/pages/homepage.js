@@ -70,6 +70,8 @@ export default function Homepage({ props }) {
 
     const handleWorkoutEditFormClose = () => {
         setShowWorkoutEditForm(false);
+        setNewExercise([{exercise: "", sets: "", reps: ""}]);
+        setNewWorkout({title: "", date: "", exercises: []});
     }
 
     function sendData() {
@@ -107,6 +109,11 @@ export default function Homepage({ props }) {
         setNewExercise(data);
     }
 
+    function handleSelectEvent(e) {
+        handleWorkoutEditFormShow();
+        setNewWorkout(e);
+        setNewExercise(e.exercises);
+    }
     return (
         <div>
             <h1>Workout Calendar</h1>
@@ -123,7 +130,19 @@ export default function Homepage({ props }) {
                 handleExerciseForm={handleExerciseForm}
                 addFields={addFields}
                 removeFields={removeFields}
-                handleNewWorkout={handleNewWorkout}
+                handleSubmit={handleNewWorkout}
+            />
+            <Popup // MAKE SINGLE CLICK SHOW A VIEW WORKOUT PAGE AND A DOUBLE CLICK AN EDIT PAGE
+                show={showWorkoutEditForm}
+                onHide={handleWorkoutEditFormClose}
+                isEditModal={true}
+                newWorkout={newWorkout}
+                setNewWorkout={setNewWorkout}
+                newExercise={newExercise}
+                handleExerciseForm={handleExerciseForm}
+                addFields={addFields}
+                removeFields={removeFields}
+                handleSubmit={handleNewWorkout} // this needs to be its own submit
             />
             <Calendar 
                 localizer={localizer} 

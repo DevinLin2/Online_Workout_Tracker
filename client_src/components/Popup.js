@@ -5,11 +5,26 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-export default function Popup({ show, onHide, isWorkoutModal, newWorkout, setNewWorkout, newExercise, handleExerciseForm, addFields, removeFields, handleNewWorkout }) {
+export default function Popup({ 
+    show, 
+    onHide, 
+    isWorkoutModal, 
+    isEditModal,
+    newWorkout, 
+    setNewWorkout, 
+    newExercise, 
+    handleExerciseForm, 
+    addFields, 
+    removeFields, 
+    handleSubmit
+}) {
     return (
         <Modal show={show} onHide={onHide} dialogClassName="workoutModal">
             {isWorkoutModal && <Modal.Header closeButton>
                 <Modal.Title>Today's Workout</Modal.Title>
+            </Modal.Header>}
+            {isEditModal && <Modal.Header closeButton>
+                <Modal.Title>Edit Workout</Modal.Title>
             </Modal.Header>}
             <Modal.Body>
                 <Form>
@@ -60,7 +75,7 @@ export default function Popup({ show, onHide, isWorkoutModal, newWorkout, setNew
                                 <Button variant="danger" onClick={removeFields}>Remove exercise</Button>
                             </Col>
                             <Col xs={4}>
-                                <Button  className="float-end" variant="success" onClick={handleNewWorkout}>Enter</Button>
+                                <Button  className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
                             </Col>
                         </Row>
                     </Container>
