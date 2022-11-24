@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import moment from 'moment';
 
 export default function Popup({ 
     show, 
@@ -39,7 +40,7 @@ export default function Popup({
                             <Col xs={4}>
                                 <Form.Group className="mb-3" controlId="date">
                                     <Form.Label>Date:</Form.Label>
-                                    <Form.Control type="date" selected={newWorkout.date} onChange={(e) => setNewWorkout({...newWorkout, date: e.target.value})}/>
+                                    <Form.Control type="date" value={moment(newWorkout.date).format("YYYY-MM-DD")} onChange={(e) => setNewWorkout({...newWorkout, date: e.target.value})}/>
                                 </Form.Group>
                             </Col>
                         </Row>
