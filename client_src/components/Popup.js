@@ -11,6 +11,7 @@ export default function Popup({
     onHide, 
     isWorkoutModal, 
     isEditModal,
+    isViewModal,
     newWorkout, 
     setNewWorkout, 
     newExercise, 
@@ -28,7 +29,10 @@ export default function Popup({
             {isEditModal && <Modal.Header closeButton>
                 <Modal.Title>Edit Workout</Modal.Title>
             </Modal.Header>}
-            <Modal.Body>
+            {isViewModal && <Modal.Header closeButton>
+                <Modal.Title>View Workout</Modal.Title>
+            </Modal.Header>}
+            {(isWorkoutModal || isEditModal) && <Modal.Body>
                 <Form>
                     <Container>
                         <Row>
@@ -101,7 +105,13 @@ export default function Popup({
                         </Row>
                     </Container>
                 </Form>
-            </Modal.Body>
+            </Modal.Body>}
+            {isViewModal && <Modal.Body>
+                <Container>
+                    {newWorkout.title}
+                    {newExercise[0].weight}
+                </Container>
+            </Modal.Body>}
         </Modal>
     )
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
@@ -54,6 +54,12 @@ export default function Homepage({ props }) {
         setAllEvents(importedExercisesArray);
     }, []);
 
+    useEffect(() => {
+        return () => {
+          window.clearTimeout(clickRef?.current)
+        }
+      }, [])
+
     const [newWorkout, setNewWorkout] = useState({title: "", date: "", startTime: "", endTime: "", exercises: []});
     const [newExercise, setNewExercise] = useState([
         {exercise: "", sets: "", reps: "", weight: ""}
@@ -63,19 +69,25 @@ export default function Homepage({ props }) {
     // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
     const [showWorkoutEditForm, setShowWorkoutEditForm] = useState(false);
-
-    const handleWorkoutFormClose = () => {
-        setShowWorkoutForm(false);
-        setNewExercise([{exercise: "", sets: "", reps: "", weight: ""}]);
-        setNewWorkout({title: "", date: "", startTime: "", endTime: "", exercises: []});
-    }
+    const [showWorkoutView, setShowWorkoutView] = useState(false);
+    const clickRef = useRef(null)
 
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
 
     const handleWorkoutEditFormShow = () => setShowWorkoutEditForm(true);
 
+    const handleWorkoutViewShow = () => setShowWorkoutView(true);
+
+    const handleWorkoutViewClose = () => setShowWorkoutView(false);
+
     const handleWorkoutEditFormClose = () => {
         setShowWorkoutEditForm(false);
+        setNewExercise([{exercise: "", sets: "", reps: "", weight: ""}]);
+        setNewWorkout({title: "", date: "", startTime: "", endTime: "", exercises: []});
+    }
+
+    const handleWorkoutFormClose = () => {
+        setShowWorkoutForm(false);
         setNewExercise([{exercise: "", sets: "", reps: "", weight: ""}]);
         setNewWorkout({title: "", date: "", startTime: "", endTime: "", exercises: []});
     }
@@ -166,15 +178,28 @@ export default function Homepage({ props }) {
         setNewExercise(data);
     }
 
-    function handleSelectEvent(e) {
-        handleWorkoutEditFormShow();
-        setNewWorkout(e);
-        setNewExercise(e.exercises);
-        oldDate = e.date;
-        oldTitle = e.title;
-        oldStartTime = e.startTime;
-        oldEndTime = e.endTime;
-    }
+    const onDoubleClickEvent = useCallback((e) => {
+        window.clearTimeout(clickRef?.current)
+        clickRef.current = window.setTimeout(() => {
+            handleWorkoutEditFormShow();
+            setNewWorkout(e);
+            setNewExercise(e.exercises);
+            oldDate = e.date;
+            oldTitle = e.title;
+            oldStartTime = e.startTime;
+            oldEndTime = e.endTime;
+        }, 250)
+      }, [])
+
+    const onSelectEvent = useCallback((e) => {
+        window.clearTimeout(clickRef?.current)
+        clickRef.current = window.setTimeout(() => {
+            handleWorkoutViewShow();
+            setNewWorkout(e);
+            setNewExercise(e.exercises);
+        }, 250)
+      }, [])
+
     return (
         <div>
             <h1>Workout Calendar</h1>
@@ -193,7 +218,7 @@ export default function Homepage({ props }) {
                 removeFields={removeFields}
                 handleSubmit={handleNewWorkout}
             />
-            <Popup // MAKE SINGLE CLICK SHOW A VIEW WORKOUT PAGE AND A DOUBLE CLICK AN EDIT PAGE
+            <Popup 
                 show={showWorkoutEditForm}
                 onHide={handleWorkoutEditFormClose}
                 isEditModal={true}
@@ -206,13 +231,22 @@ export default function Homepage({ props }) {
                 handleSubmit={handleUpdateWorkout}
                 handleDelete={handleDeleteWorkout}
             />
+            <Popup 
+                show={showWorkoutView}
+                onHide={handleWorkoutViewClose}
+                isViewModal={true}
+                newWorkout={newWorkout}
+                newExercise={newExercise}
+                handleDelete={handleDeleteWorkout}
+            />
             <Calendar 
                 localizer={localizer} 
                 events={allEvents}
                 titleAccessor="title"
                 startAccessor="date" 
                 endAccessor="date" 
-                onSelectEvent={(e) => handleSelectEvent(e)}
+                onSelectEvent={(e) => onSelectEvent(e)}
+                onDoubleClickEvent={(e) => onDoubleClickEvent(e)}
                 style={{height: 500, margin: "50px", "z-index": -1}}
             />
         </div>
