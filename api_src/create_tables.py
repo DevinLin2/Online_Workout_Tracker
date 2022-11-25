@@ -10,6 +10,8 @@ try:
                         username        varchar(30)         NULL,
                         title           varchar(30)         NULL,
                         date            varchar(30)         NULL,
+                        startTime       varchar(30)         NULL,
+                        endTime         varchar(30)         NULL,
                         exercises       JSON                NULL,
                         PRIMARY KEY (workoutID))"""
     user_table = """CREATE TABLE User (

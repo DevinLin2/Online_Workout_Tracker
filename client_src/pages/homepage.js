@@ -32,6 +32,8 @@ const localizer = dateFnsLocalizer({
 
 const events = []
 let oldDate;
+let oldStartTime;
+let oldEndTime;
 let oldTitle;
 
 export default function Homepage({ props }) {
@@ -44,15 +46,17 @@ export default function Homepage({ props }) {
             const newData = {};
             newData.title = importedData[i][1].title;
             newData.date = importedData[i][1].date;
+            newData.startTime = importedData[i][1].startTime;
+            newData.endTime = importedData[i][1].endTime;
             newData.exercises = importedData[i][1].exercises;
             importedExercisesArray.push(newData);
         }
         setAllEvents(importedExercisesArray);
     }, []);
 
-    const [newWorkout, setNewWorkout] = useState({title: "", date: "", exercises: []});
+    const [newWorkout, setNewWorkout] = useState({title: "", date: "", startTime: "", endTime: "", exercises: []});
     const [newExercise, setNewExercise] = useState([
-        {exercise: "", sets: "", reps: ""}
+        {exercise: "", sets: "", reps: "", weight: ""}
     ]);
     const [allEvents, setAllEvents] = useState(events);
     //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
@@ -62,8 +66,8 @@ export default function Homepage({ props }) {
 
     const handleWorkoutFormClose = () => {
         setShowWorkoutForm(false);
-        setNewExercise([{exercise: "", sets: "", reps: ""}]);
-        setNewWorkout({title: "", date: "", exercises: []});
+        setNewExercise([{exercise: "", sets: "", reps: "", weight: ""}]);
+        setNewWorkout({title: "", date: "", startTime: "", endTime: "", exercises: []});
     }
 
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
@@ -72,8 +76,8 @@ export default function Homepage({ props }) {
 
     const handleWorkoutEditFormClose = () => {
         setShowWorkoutEditForm(false);
-        setNewExercise([{exercise: "", sets: "", reps: ""}]);
-        setNewWorkout({title: "", date: "", exercises: []});
+        setNewExercise([{exercise: "", sets: "", reps: "", weight: ""}]);
+        setNewWorkout({title: "", date: "", startTime: "", endTime: "", exercises: []});
     }
 
     function sendData() {
@@ -86,6 +90,8 @@ export default function Homepage({ props }) {
 
     function updateData() {
         newWorkout.username = "admin";
+        newWorkout.oldStartTime = oldStartTime;
+        newWorkout.oldEndTime = oldEndTime;
         newWorkout.oldDate = oldDate;
         newWorkout.oldTitle = oldTitle;
         fetch('http://localhost:3000/api/workoutHandler', {
@@ -96,6 +102,8 @@ export default function Homepage({ props }) {
 
     function deleteData() {
         newWorkout.username = "admin";
+        newWorkout.oldStartTime = oldStartTime;
+        newWorkout.oldEndTime = oldEndTime;
         newWorkout.oldDate = oldDate;
         newWorkout.oldTitle = oldTitle;
         fetch('http://localhost:3000/api/workoutHandler', {
@@ -110,6 +118,7 @@ export default function Homepage({ props }) {
         newWorkout.date = moment(date).format("YYYY/MM/DD");
         newWorkout.exercises = newExercise;
         setAllEvents([...allEvents, newWorkout]);
+        // console.log(newWorkout);
         sendData();
         handleWorkoutFormClose();
     }
@@ -133,7 +142,7 @@ export default function Homepage({ props }) {
 
     function deleteSelectedWorkout() {
         for (let i = 0; i < allEvents.length; i++) {
-            if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate) {
+            if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate && allEvents[i].startTime == oldStartTime && allEvents[i].endTime == oldEndTime) {
                 allEvents.splice(i, 1);
                 break;
             }
@@ -147,7 +156,7 @@ export default function Homepage({ props }) {
     }
 
     function addFields() {
-        let newField = {exercise: "", sets: "", reps: ""};
+        let newField = {exercise: "", sets: "", reps: "", weight: ""};
         setNewExercise([...newExercise, newField]);
     }
 
@@ -163,6 +172,8 @@ export default function Homepage({ props }) {
         setNewExercise(e.exercises);
         oldDate = e.date;
         oldTitle = e.title;
+        oldStartTime = e.startTime;
+        oldEndTime = e.endTime;
     }
     return (
         <div>

@@ -8,11 +8,11 @@ const mysqlConfig = {
     database: "workout",
 };
 
-const createWorkout = async (username, title, date, exercises) => {
+const createWorkout = async (username, title, date, startTime, endTime, exercises) => {
     try {
         const connection = await mysql.createConnection(mysqlConfig);
         const [rows, fields] = await connection.execute(
-            `INSERT INTO workout (username, title, date, exercises) VALUES ("${username}", "${title}", "${date}", '${JSON.stringify(exercises)}');`
+            `INSERT INTO workout (username, title, date, startTime, endTime, exercises) VALUES ("${username}", "${title}", "${date}", "${startTime}", "${endTime}", '${JSON.stringify(exercises)}');`
         );
         connection.end();
         return rows;
@@ -34,11 +34,11 @@ const getWorkout = async () => {
     }
 }
 
-const updateWorkout = async (username, title, date, exercises, oldTitle, oldDate) => {
+const updateWorkout = async (username, title, date, startTime, endTime, exercises, oldTitle, oldDate, oldStartTime, oldEndTime) => {
     try {
         const connection = await mysql.createConnection(mysqlConfig);
         const [rows, fields] = await connection.execute(
-            `UPDATE workout SET title = "${title}", date = "${date}", exercises = '${JSON.stringify(exercises)}' WHERE username = "${username}" AND title = "${oldTitle}" AND date = "${oldDate}";`
+            `UPDATE workout SET title = "${title}", date = "${date}", startTime = "${startTime}", endTime = "${endTime}", exercises = '${JSON.stringify(exercises)}' WHERE username = "${username}" AND title = "${oldTitle}" AND date = "${oldDate}" AND startTime = "${oldStartTime}" AND endTime = "${oldEndTime}";`
         );
         connection.end();
         return rows;
@@ -47,11 +47,11 @@ const updateWorkout = async (username, title, date, exercises, oldTitle, oldDate
     }
 }
 
-const deleteWorkout = async (username, oldTitle, oldDate) => {
+const deleteWorkout = async (username, oldTitle, oldDate, oldStartTime, oldEndTime) => {
     try {
         const connection = await mysql.createConnection(mysqlConfig);
         const [rows, fields] = await connection.execute(
-            `DELETE FROM workout WHERE username = "${username}" AND title = "${oldTitle}" AND date = "${oldDate}";`
+            `DELETE FROM workout WHERE username = "${username}" AND title = "${oldTitle}" AND date = "${oldDate}" AND startTime = "${oldStartTime}" AND endTime = "${oldEndTime}";`
         );
         connection.end();
         return rows;

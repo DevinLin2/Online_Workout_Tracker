@@ -7,6 +7,10 @@ export default async function handler(req, res) {
     let title;
     let date;
     let exercises;
+    let startTime;
+    let endTime;
+    let oldStartTime;
+    let oldEndTime;
     let oldDate;
     let oldTitle;
     if (method != 'GET') {
@@ -15,6 +19,8 @@ export default async function handler(req, res) {
         title = data.title;
         date = data.date;
         exercises = data.exercises;
+        startTime = data.startTime;
+        endTime = data.endTime;
     }
     let result;
     switch (method) {
@@ -24,21 +30,25 @@ export default async function handler(req, res) {
             res.json({...result, message: `workout sent`});
             break;
         case 'POST':
-            result = await createWorkout(username, title, date, exercises);
+            result = await createWorkout(username, title, date, startTime, endTime, exercises);
             res.json({...result, message: `workout created`});
             res.statusCode = 200;
             break;
         case 'PUT':
             oldDate = data.oldDate;
             oldTitle = data.oldTitle;
-            result = await updateWorkout(username, title, date, exercises, oldTitle, oldDate);
+            oldStartTime = data.oldStartTime;
+            oldEndTime = data.oldEndTime;
+            result = await updateWorkout(username, title, date, startTime, endTime, exercises, oldTitle, oldDate, oldStartTime, oldEndTime);
             res.json({...result, message: `workout updated`});
             res.statusCode = 200;
             break;
         case 'DELETE':
             oldDate = data.oldDate;
             oldTitle = data.oldTitle;
-            result = await deleteWorkout(username, oldTitle, oldDate);
+            oldStartTime = data.oldStartTime;
+            oldEndTime = data.oldEndTime;
+            result = await deleteWorkout(username, oldTitle, oldDate, oldStartTime, oldEndTime);
             res.json({...result, message: `workout deleted`});
             res.statusCode = 200;
             break;
