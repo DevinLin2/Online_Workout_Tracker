@@ -78,7 +78,11 @@ export default function Homepage({ props }) {
 
     const handleWorkoutViewShow = () => setShowWorkoutView(true);
 
-    const handleWorkoutViewClose = () => setShowWorkoutView(false);
+    const handleWorkoutViewClose = () => {
+        setShowWorkoutView(false);
+        setNewExercise([{exercise: "", sets: "", reps: "", weight: ""}]);
+        setNewWorkout({title: "", date: "", startTime: "", endTime: "", exercises: []});
+    }
 
     const handleWorkoutEditFormClose = () => {
         setShowWorkoutEditForm(false);
