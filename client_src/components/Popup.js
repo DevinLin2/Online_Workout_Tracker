@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import moment from 'moment';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Popup({
     show,

@@ -10,6 +10,12 @@ import Button from 'react-bootstrap/Button';
 import moment from 'moment';
 import Popup from "../components/Popup";
 import { toast, ToastContainer } from 'react-nextjs-toast'
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faDumbbell,
+} from "@fortawesome/free-solid-svg-icons";
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -269,9 +275,15 @@ export default function Homepage({ props }) {
     }
 
     return (
-        <div>
+        <div className="homepage">
+            <Navbar bg="dark" variant="dark">
+                <Container fluid>
+                    <Navbar.Brand href="#">
+                        <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
+                    </Navbar.Brand>
+                </Container>
+            </Navbar>
             <ToastContainer align={"right"} />
-            <h1>Workout Calendar</h1>
             <Button variant="primary" onClick={handleWorkoutFormShow}>
                 Create Workout
             </Button>
