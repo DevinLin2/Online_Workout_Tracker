@@ -21,7 +21,8 @@ export default function Popup({
     addFields,
     removeFields,
     handleSubmit,
-    handleDelete
+    handleDelete,
+    handleEdit,
 }) {
     return (
         <Modal show={show} onHide={onHide} scrollable={true} animation={false} dialogClassName="workoutModal">
@@ -152,6 +153,7 @@ export default function Popup({
                             })}
                         </tbody>
                     </Table>
+                    <Button className="float-end" variant="primary" onClick={handleEdit}>Edit Workout</Button>
                 </Container>
             </Modal.Body>}
         </Modal>

@@ -133,11 +133,10 @@ export default function Homepage({ props }) {
         const calendarDisplayWorkout = {
             title: newWorkout.title,
             startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
-            endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(), 
+            endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(),
             exercises: newWorkout.exercises
         };
         setAllEvents([...allEvents, calendarDisplayWorkout]);
-        // console.log(newWorkout);
         sendData();
         handleWorkoutFormClose();
     }
@@ -151,7 +150,7 @@ export default function Homepage({ props }) {
         const calendarDisplayWorkout = {
             title: newWorkout.title,
             startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
-            endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(), 
+            endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(),
             exercises: newWorkout.exercises
         };
         setAllEvents([...allEvents, calendarDisplayWorkout]);
@@ -203,7 +202,7 @@ export default function Homepage({ props }) {
             oldDate = moment(e.startDate).format("YYYY/MM/DD");
             oldTitle = e.title;
             oldStartTime = moment(e.startDate).format("HH:mm");
-            oldEndTime = moment(e.endDate).format("HH:mm"); // FIX THE FORMATTING ON THIS AND FIX FORMATTING ON SUBMIT OF WORKOUT
+            oldEndTime = moment(e.endDate).format("HH:mm");
         }, 250)
     }, [])
 
@@ -219,9 +218,16 @@ export default function Homepage({ props }) {
         }, 250)
     }, [])
 
-    // let date = newWorkout.date;
-    // let startTime = newWorkout.startTime;
-    // console.log(moment(date + " " + startTime).toDate());
+    function handleEditClick() {
+        oldDate = newWorkout.date;
+        oldTitle = newWorkout.title;
+        oldStartTime = moment(newWorkout.startDate).format("HH:mm");
+        oldEndTime = moment(newWorkout.endDate).format("HH:mm");
+        newWorkout.startTime = moment(newWorkout.startDate).format("HH:mm");
+        newWorkout.endTime = moment(newWorkout.endDate).format("HH:mm");
+        setShowWorkoutView(false);
+        handleWorkoutEditFormShow();
+    }
 
     return (
         <div>
@@ -260,7 +266,7 @@ export default function Homepage({ props }) {
                 isViewModal={true}
                 newWorkout={newWorkout}
                 newExercise={newExercise}
-                handleDelete={handleDeleteWorkout}
+                handleEdit={handleEditClick}
             />
             <Calendar
                 localizer={localizer}
