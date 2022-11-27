@@ -87,7 +87,7 @@ export default function Popup({
                                     </Col>
                                     <Col xs={3}>
                                         <Form.Group className="mb-3" controlId="reps">
-                                            <Form.Label>Weight Used:</Form.Label>
+                                            <Form.Label>Weight Used (lbs):</Form.Label>
                                             <Form.Control type="text" name="weight" placeholder="Enter weight used..." value={input.weight} onChange={event => handleExerciseForm(index, event)} />
                                         </Form.Group>
                                     </Col>

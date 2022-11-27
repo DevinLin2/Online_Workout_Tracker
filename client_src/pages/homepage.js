@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Button from 'react-bootstrap/Button';
 import moment from 'moment';
 import Popup from "../components/Popup";
+import { toast, ToastContainer } from 'react-nextjs-toast'
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -27,6 +28,7 @@ let oldDate;
 let oldStartTime;
 let oldEndTime;
 let oldTitle;
+let isDuplicateWorkout;
 
 export default function Homepage({ props }) {
 
@@ -125,20 +127,42 @@ export default function Homepage({ props }) {
         });
     }
 
-    function handleNewWorkout(e) {
-        e.preventDefault();
+    function checkForDuplicateWorkout() {
         let date = newWorkout.date;
         newWorkout.date = moment(date).format("YYYY/MM/DD");
-        newWorkout.exercises = newExercise;
-        const calendarDisplayWorkout = {
-            title: newWorkout.title,
-            startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
-            endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(),
-            exercises: newWorkout.exercises
-        };
-        setAllEvents([...allEvents, calendarDisplayWorkout]);
-        sendData();
-        handleWorkoutFormClose();
+        for (let i = 0; i < allEvents.length; i++) {
+            if (newWorkout.title == allEvents[i].title && newWorkout.date == moment(allEvents[i].startDate).format("YYYY/MM/DD")) {
+                isDuplicateWorkout = true;
+                break;
+            }
+        }
+    }
+
+    function handleNewWorkout(e) {
+        e.preventDefault();
+        checkForDuplicateWorkout();
+        if (isDuplicateWorkout) {
+            toast.notify('Please enter a workout with a unique title and date.', {
+                duration: 3,
+                type: "error"
+            });
+            isDuplicateWorkout = false;
+        } else {
+            newWorkout.exercises = newExercise;
+            const calendarDisplayWorkout = {
+                title: newWorkout.title,
+                startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
+                endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(),
+                exercises: newWorkout.exercises
+            };
+            setAllEvents([...allEvents, calendarDisplayWorkout]);
+            sendData();
+            handleWorkoutFormClose();
+            toast.notify('Workout added.', {
+                duration: 3,
+                type: "success"
+            });
+        }
     }
 
     function handleUpdateWorkout(e) {
@@ -231,6 +255,7 @@ export default function Homepage({ props }) {
 
     return (
         <div>
+            <ToastContainer align={"right"} />
             <h1>Workout Calendar</h1>
             <Button variant="primary" onClick={handleWorkoutFormShow}>
                 Create Workout
