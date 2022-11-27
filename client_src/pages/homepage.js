@@ -167,25 +167,40 @@ export default function Homepage({ props }) {
 
     function handleUpdateWorkout(e) {
         e.preventDefault();
-        let date = newWorkout.date;
-        newWorkout.date = moment(date).format("YYYY/MM/DD");
-        newWorkout.exercises = newExercise;
-        deleteSelectedWorkout();
-        const calendarDisplayWorkout = {
-            title: newWorkout.title,
-            startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
-            endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(),
-            exercises: newWorkout.exercises
-        };
-        setAllEvents([...allEvents, calendarDisplayWorkout]);
-        updateData();
-        handleWorkoutEditFormClose();
+        checkForDuplicateWorkout();
+        if (isDuplicateWorkout) {
+            toast.notify('Please enter a workout with a unique title and date.', {
+                duration: 3,
+                type: "error"
+            });
+            isDuplicateWorkout = false;
+        } else {
+            newWorkout.exercises = newExercise;
+            deleteSelectedWorkout();
+            const calendarDisplayWorkout = {
+                title: newWorkout.title,
+                startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
+                endDate: moment(newWorkout.date + " " + newWorkout.endTime).toDate(),
+                exercises: newWorkout.exercises
+            };
+            setAllEvents([...allEvents, calendarDisplayWorkout]);
+            updateData();
+            handleWorkoutEditFormClose();
+            toast.notify('Workout updated.', {
+                duration: 3,
+                type: "success"
+            });
+        }
     }
 
     function handleDeleteWorkout() {
         deleteSelectedWorkout();
         deleteData();
         handleWorkoutEditFormClose();
+        toast.notify('Workout deleted.', {
+            duration: 3,
+            type: "success"
+        });
     }
 
     function deleteSelectedWorkout() {
