@@ -35,6 +35,10 @@ let oldStartTime;
 let oldEndTime;
 let oldTitle;
 let isDuplicateWorkout;
+let emptyName;
+let emptyDate;
+let emptyTime;
+let emptyExercises;
 
 export default function Homepage({ props }) {
 
@@ -144,17 +148,50 @@ export default function Homepage({ props }) {
         }
     }
 
+    function checkForEmptyInputs() {
+        newWorkout.exercises = newExercise;
+        if (newWorkout.title == "") emptyName = true;
+        if (newWorkout.date == "Invalid date") emptyDate = true;
+        if (newWorkout.startTime == "" || newWorkout.endTime == "") emptyTime = true;
+        if (newWorkout.exercises.length == 0 || newWorkout.exercises.exercise == null) emptyExercises = true;
+    }
+
     function handleNewWorkout(e) {
         e.preventDefault();
         checkForDuplicateWorkout();
+        checkForEmptyInputs();
         if (isDuplicateWorkout) {
             toast.notify('Please enter a workout with a unique title and date.', {
                 duration: 3,
                 type: "error"
             });
             isDuplicateWorkout = false;
+        } else if (emptyName) {
+            toast.notify('Please enter a name for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyName = false;
+        } else if (emptyDate) {
+            toast.notify('Please enter a date for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyDate = false;
+        } else if (emptyTime) {
+            toast.notify('Please enter a start and end time for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyTime = false;
+        } else if (emptyExercises) {
+            toast.notify('Please enter at least one exercise for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyExercises = false;
         } else {
-            newWorkout.exercises = newExercise;
+            // newWorkout.exercises = newExercise;
             const calendarDisplayWorkout = {
                 title: newWorkout.title,
                 startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
@@ -174,14 +211,39 @@ export default function Homepage({ props }) {
     function handleUpdateWorkout(e) {
         e.preventDefault();
         checkForDuplicateWorkout();
+        checkForEmptyInputs();
         if (isDuplicateWorkout) {
             toast.notify('Please enter a workout with a unique title and date.', {
                 duration: 3,
                 type: "error"
             });
             isDuplicateWorkout = false;
+        } else if (emptyName) {
+            toast.notify('Please enter a name for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyName = false;
+        } else if (emptyDate) {
+            toast.notify('Please enter a date for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyDate = false;
+        } else if (emptyTime) {
+            toast.notify('Please enter a start and end time for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyTime = false;
+        } else if (emptyExercises) {
+            toast.notify('Please enter at least one exercise for the workout.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyExercises = false;
         } else {
-            newWorkout.exercises = newExercise;
+            // newWorkout.exercises = newExercise;
             deleteSelectedWorkout();
             const calendarDisplayWorkout = {
                 title: newWorkout.title,
