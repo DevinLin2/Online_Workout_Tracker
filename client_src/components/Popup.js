@@ -1,5 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -87,7 +88,7 @@ export default function Popup({
                                         </Form.Group>
                                     </Col>
                                     <Col xs={3}>
-                                        <Form.Group className="mb-3" controlId="reps">
+                                        <Form.Group className="mb-3" controlId="weight">
                                             <Form.Label>Weight Used (lbs):</Form.Label>
                                             <Form.Control type="text" name="weight" placeholder="Enter weight used..." value={input.weight} onChange={event => handleExerciseForm(index, event)} />
                                         </Form.Group>
@@ -96,16 +97,22 @@ export default function Popup({
                             )
                         })}
                         <Row>
-                            <Col xs={3}>
-                                <Button variant="primary" onClick={addFields}>Add exercise</Button>
+                            <Col xs={6}>
+                                <ButtonGroup aria-label="formChangeButtons">
+                                    <Button variant="primary" onClick={addFields}>Add Exercise</Button>
+                                    <Button variant="danger" onClick={removeFields}>Remove Exercise</Button>
+                                </ButtonGroup>
                             </Col>
-                            <Col xs={5}>
-                                <Button variant="danger" onClick={removeFields}>Remove exercise</Button>
+                            <Col xs={6}>
+                                <ButtonGroup className="float-end" aria-label="formChangeButtons">
+                                    {isEditModal && <Button variant="danger" onClick={handleDelete}>Delete Workout</Button>}
+                                    <Button variant="success" onClick={handleSubmit}>Enter</Button>
+                                </ButtonGroup>
+                                {/* {isEditModal && <Button className="float-end" variant="danger" onClick={handleDelete}>Delete Workout</Button>} */}
                             </Col>
-                            <Col xs={4}>
+                            {/* <Col xs={1}>
                                 <Button className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
-                                {isEditModal && <Button className="float-end" variant="danger" onClick={handleDelete}>Delete Workout</Button>}
-                            </Col>
+                            </Col> */}
                         </Row>
                     </Container>
                 </Form>

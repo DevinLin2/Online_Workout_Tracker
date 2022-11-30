@@ -9,6 +9,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import Button from 'react-bootstrap/Button';
 import moment from 'moment';
 import Popup from "../components/Popup";
+import Modal from 'react-bootstrap/Modal';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { toast, ToastContainer } from 'react-nextjs-toast'
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
@@ -79,6 +82,7 @@ export default function Homepage({ props }) {
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
     const [showWorkoutEditForm, setShowWorkoutEditForm] = useState(false);
     const [showWorkoutView, setShowWorkoutView] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const clickRef = useRef(null)
 
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
@@ -262,13 +266,13 @@ export default function Homepage({ props }) {
     }
 
     function handleDeleteWorkout() {
-        deleteSelectedWorkout();
-        deleteData();
-        handleWorkoutEditFormClose();
-        toast.notify('Workout deleted.', {
-            duration: 3,
-            type: "success"
-        });
+        setShowWorkoutEditForm(false);
+        setShowConfirmation(true);
+    }
+
+    function handleCloseConfirmation() {
+        setShowConfirmation(false);
+        setShowWorkoutEditForm(true);
     }
 
     function deleteSelectedWorkout() {
@@ -336,6 +340,17 @@ export default function Homepage({ props }) {
         handleWorkoutEditFormShow();
     }
 
+    function onConfirmDeleteData() {
+        deleteSelectedWorkout();
+        deleteData();
+        handleWorkoutEditFormClose();
+        setShowConfirmation(false);
+        toast.notify('Workout deleted.', {
+            duration: 3,
+            type: "success"
+        });
+    }
+
     return (
         <div className="homepage">
             <Navbar bg="dark" variant="dark">
@@ -343,12 +358,30 @@ export default function Homepage({ props }) {
                     <Navbar.Brand href="#">
                         <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
                     </Navbar.Brand>
+                    <Button variant="primary" onClick={handleWorkoutFormShow}>
+                        Create Workout
+                    </Button>
                 </Container>
             </Navbar>
             <ToastContainer align={"right"} />
-            <Button variant="primary" onClick={handleWorkoutFormShow}>
-                Create Workout
-            </Button>
+            <Modal show={showConfirmation} onHide={handleCloseConfirmation} animation={false} dialogClassName="workoutModal">
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>
+                        Are you sure you want to delete this workout? This action cannot be undone.
+                    </p>
+                    <Row>
+                        <Col xs={6}>
+                            <Button variant="danger" onClick={handleCloseConfirmation}>No</Button>
+                        </Col>
+                        <Col xs={6}>
+                            <Button className="float-end" variant="success" onClick={onConfirmDeleteData}>Yes</Button>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+            </Modal>
             <Popup
                 show={showWorkoutForm}
                 onHide={handleWorkoutFormClose}
