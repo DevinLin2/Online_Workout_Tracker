@@ -7,6 +7,7 @@ import getDay from "date-fns/getDay";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import moment from 'moment';
 import Popup from "../components/Popup";
 import Modal from 'react-bootstrap/Modal';
@@ -43,27 +44,36 @@ let emptyDate;
 let emptyTime;
 let emptyExercises;
 
+export async function getStaticProps() {
+    const workoutRes = await fetch('http://localhost:3000/api/workoutHandler');
+    const workoutprops = await workoutRes.json();
+    const mealRes = await fetch('http://localhost:3000/api/mealHandler');
+    const mealProps = await mealRes.json();
+    const props = {workoutprops, mealProps}
+    return {
+        props: {
+            props,
+        },
+    }
+}
+
 export default function Homepage({ props }) {
 
     useEffect(() => {
+        // console.log(props);
         const importedData = Object.entries(props);
-        importedData.pop();
-        const importedExercisesArray = [];
-        for (let i = 0; i < importedData.length; i++) {
-            const newData = {};
-            // newData.title = importedData[i][1].title;
-            // newData.date = importedData[i][1].date;
-            // newData.startTime = importedData[i][1].startTime;
-            // newData.endTime = importedData[i][1].endTime;
-            // newData.exercises = importedData[i][1].exercises;
-
-            newData.title = importedData[i][1].title;
-            newData.startDate = moment(importedData[i][1].date + " " + importedData[i][1].startTime).toDate();
-            newData.endDate = moment(importedData[i][1].date + " " + importedData[i][1].endTime).toDate();
-            newData.exercises = importedData[i][1].exercises;
-            importedExercisesArray.push(newData);
-        }
-        setAllEvents(importedExercisesArray); // CHANGE ALLEVENTS ARRAY TO MATCH DATE FORMAT
+        console.log(importedData[1]);
+        // importedData.pop(); // remove this
+        // const importedExercisesArray = [];
+        // for (let i = 0; i < importedData.length; i++) {
+        //     const newData = {};
+        //     newData.title = importedData[i][1].title;
+        //     newData.startDate = moment(importedData[i][1].date + " " + importedData[i][1].startTime).toDate();
+        //     newData.endDate = moment(importedData[i][1].date + " " + importedData[i][1].endTime).toDate();
+        //     newData.exercises = importedData[i][1].exercises;
+        //     importedExercisesArray.push(newData);
+        // }
+        // setAllEvents(importedExercisesArray); // CHANGE ALLEVENTS ARRAY TO MATCH DATE FORMAT
     }, []);
 
     useEffect(() => {
@@ -76,13 +86,18 @@ export default function Homepage({ props }) {
     const [newExercise, setNewExercise] = useState([
         { exercise: "", sets: "", reps: "", weight: "" }
     ]);
+    const [newMeal, setNewMeal] = useState({ title: "Meal", date: "", meals: [] });
+    const [meals, setMeals] = useState([
+        { meal: "", calories: "" }
+    ]);
     const [allEvents, setAllEvents] = useState(events);
-    //need to hanndle clicking events and having a popup show all the workouts: https://github.com/jquense/react-big-calendar/issues/456
-    // THIS TOO => https://stackoverflow.com/questions/68657646/react-big-calendar-how-make-a-popup-with-onselectevent 
     const [showWorkoutForm, setShowWorkoutForm] = useState(false);
     const [showWorkoutEditForm, setShowWorkoutEditForm] = useState(false);
     const [showWorkoutView, setShowWorkoutView] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showMealForm, setShowMealForm] = useState(false);
+    const [showMealEditForm, setShowMealEditForm] = useState(false);
+    const [showMealViewForm, setShowMealViewForm] = useState(false);
     const clickRef = useRef(null)
 
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
@@ -90,6 +105,36 @@ export default function Homepage({ props }) {
     const handleWorkoutEditFormShow = () => setShowWorkoutEditForm(true);
 
     const handleWorkoutViewShow = () => setShowWorkoutView(true);
+
+    const handleMealFormShow = () => setShowMealForm(true);
+
+    const handleMealEditFormShow = () => setShowMealEditForm(true);
+
+    const handleMealViewFormShow = () => setShowMealViewForm(true);
+
+    const handleMealFormClose = () => {
+        setShowMealForm(false);
+        setNewMeal({ title: "Meal", date: "", meals: [] });
+        setMeals([
+            { meal: "", calories: "" }
+        ]);
+    }
+
+    const handleMealEditFormClose = () => {
+        setShowMealEditForm(false);
+        setNewMeal({ title: "Meal", date: "", meals: [] });
+        setMeals([
+            { meal: "", calories: "" }
+        ]);
+    }
+
+    const handleMealViewFormClose = () => {
+        setShowMealViewForm(false);
+        setNewMeal({ title: "Meal", date: "", meals: [] });
+        setMeals([
+            { meal: "", calories: "" }
+        ]);
+    }
 
     const handleWorkoutViewClose = () => {
         setShowWorkoutView(false);
@@ -109,7 +154,7 @@ export default function Homepage({ props }) {
         setNewWorkout({ title: "", date: "", startTime: "", endTime: "", exercises: [] });
     }
 
-    function sendData() {
+    function sendWorkoutData() {
         newWorkout.username = "admin";
         fetch('http://localhost:3000/api/workoutHandler', {
             method: 'POST',
@@ -117,7 +162,7 @@ export default function Homepage({ props }) {
         });
     }
 
-    function updateData() {
+    function updateWorkoutData() {
         newWorkout.username = "admin";
         newWorkout.oldStartTime = oldStartTime;
         newWorkout.oldEndTime = oldEndTime;
@@ -129,7 +174,7 @@ export default function Homepage({ props }) {
         });
     }
 
-    function deleteData() {
+    function deleteWorkoutData() {
         newWorkout.username = "admin";
         newWorkout.oldStartTime = oldStartTime;
         newWorkout.oldEndTime = oldEndTime;
@@ -154,10 +199,20 @@ export default function Homepage({ props }) {
 
     function checkForEmptyInputs() {
         newWorkout.exercises = newExercise;
+        console.log(newWorkout.exercises);
         if (newWorkout.title == "") emptyName = true;
         if (newWorkout.date == "Invalid date") emptyDate = true;
         if (newWorkout.startTime == "" || newWorkout.endTime == "") emptyTime = true;
-        if (newWorkout.exercises.length == 0 || newWorkout.exercises.exercise == null) emptyExercises = true;
+        if (newWorkout.exercises.length == 0) {
+            emptyExercises = true;
+        } else {
+            for (let i = 0; i < newWorkout.exercises.length; i++) {
+                if (newWorkout.exercises[i].exercise == null) {
+                    emptyExercises = true;
+                    break;
+                }
+            }
+        }
     }
 
     function handleNewWorkout(e) {
@@ -203,7 +258,7 @@ export default function Homepage({ props }) {
                 exercises: newWorkout.exercises
             };
             setAllEvents([...allEvents, calendarDisplayWorkout]);
-            sendData();
+            sendWorkoutData();
             handleWorkoutFormClose();
             toast.notify('Workout added.', {
                 duration: 3,
@@ -256,7 +311,7 @@ export default function Homepage({ props }) {
                 exercises: newWorkout.exercises
             };
             setAllEvents([...allEvents, calendarDisplayWorkout]);
-            updateData();
+            updateWorkoutData();
             handleWorkoutEditFormClose();
             toast.notify('Workout updated.', {
                 duration: 3,
@@ -340,12 +395,55 @@ export default function Homepage({ props }) {
         handleWorkoutEditFormShow();
     }
 
-    function onConfirmDeleteData() {
+    function onConfirmdeleteWorkoutData() {
         deleteSelectedWorkout();
-        deleteData();
+        deleteWorkoutData();
         handleWorkoutEditFormClose();
         setShowConfirmation(false);
         toast.notify('Workout deleted.', {
+            duration: 3,
+            type: "success"
+        });
+    }
+
+    function handleMealsForm(index, event) {
+        let data = [...meals];
+        data[index][event.target.name] = event.target.value;
+        setMeals(data);
+    }
+
+    function addMealFields() {
+        let newField = { meal: "", calories: "" };
+        setMeals([...meals, newField]);
+    }
+
+    function removeMealFields() {
+        let data = [...meals];
+        data.pop();
+        setMeals(data);
+    }
+
+    function sendMealData() {
+        newMeal.username = "admin";
+        fetch('http://localhost:3000/api/mealHandler', {
+            method: 'POST',
+            body: JSON.stringify(newMeal)
+        });
+    }
+
+    function handleNewMeal(e) {
+        e.preventDefault();
+        newMeal.meals = meals;
+        const calendarDisplayMeal = {
+            title: newMeal.title,
+            startDate: moment(newMeal.date).toDate(),
+            endDate: moment(newMeal.date).toDate(),
+            meals: newMeal.meals,
+        };
+        setAllEvents([...allEvents, calendarDisplayMeal]);
+        sendMealData();
+        handleMealFormClose();
+        toast.notify('Meal log added.', {
             duration: 3,
             type: "success"
         });
@@ -358,9 +456,14 @@ export default function Homepage({ props }) {
                     <Navbar.Brand href="#">
                         <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
                     </Navbar.Brand>
-                    <Button variant="primary" onClick={handleWorkoutFormShow}>
-                        Create Workout
-                    </Button>
+                    <ButtonGroup aria-label="formButtoms">
+                        <Button variant="info" onClick={handleMealFormShow}>
+                            Create Meal Log
+                        </Button>
+                        <Button variant="primary" onClick={handleWorkoutFormShow}>
+                            Create Workout
+                        </Button>
+                    </ButtonGroup>
                 </Container>
             </Navbar>
             <ToastContainer align={"right"} />
@@ -377,7 +480,7 @@ export default function Homepage({ props }) {
                             <Button variant="danger" onClick={handleCloseConfirmation}>No</Button>
                         </Col>
                         <Col xs={6}>
-                            <Button className="float-end" variant="success" onClick={onConfirmDeleteData}>Yes</Button>
+                            <Button className="float-end" variant="success" onClick={onConfirmdeleteWorkoutData}>Yes</Button>
                         </Col>
                     </Row>
                 </Modal.Body>
@@ -415,6 +518,18 @@ export default function Homepage({ props }) {
                 newExercise={newExercise}
                 handleEdit={handleEditClick}
             />
+            <Popup
+                show={showMealForm}
+                onHide={handleMealFormClose}
+                isMealModal={true}
+                newMeal={newMeal}
+                setNewMeal={setNewMeal}
+                meals={meals}
+                handleMealsForm={handleMealsForm}
+                addFields={addMealFields}
+                removeFields={removeMealFields}
+                handleSubmit={handleNewMeal}
+            />
             <Calendar
                 localizer={localizer}
                 events={allEvents}
@@ -427,14 +542,4 @@ export default function Homepage({ props }) {
             />
         </div>
     );
-}
-
-export async function getStaticProps() {
-    const res = await fetch('http://localhost:3000/api/workoutHandler');
-    const props = await res.json();
-    return {
-        props: {
-            props,
-        },
-    }
 }

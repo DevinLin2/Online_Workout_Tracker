@@ -16,9 +16,16 @@ export default function Popup({
     isWorkoutModal,
     isEditModal,
     isViewModal,
+    isMealModal,
+    isMealEditModal,
+    isMealViewModal,
     newWorkout,
+    newMeal,
+    setNewMeal,
     setNewWorkout,
     newExercise,
+    meals,
+    handleMealsForm,
     handleExerciseForm,
     addFields,
     removeFields,
@@ -37,6 +44,53 @@ export default function Popup({
             {isViewModal && <Modal.Header closeButton>
                 <Modal.Title>View Workout</Modal.Title>
             </Modal.Header>}
+            {isMealModal && <Modal.Header closeButton>
+                <Modal.Title>Meal Log</Modal.Title>
+            </Modal.Header>}
+            {(isMealModal || isMealEditModal) && <Modal.Body>
+                <Form>
+                    <Container>
+                        <Row>
+                            <Form.Group className="mb-3" controlId="date">
+                                <Form.Label>Date:</Form.Label>
+                                <Form.Control type="date" value={moment(newMeal.date).format("YYYY-MM-DD")} onChange={(e) => setNewMeal({ ...newMeal, date: e.target.value })} />
+                            </Form.Group>
+                        </Row>
+                        {meals.map((input, index) => {
+                            return (
+                                <Row key={index}>
+                                    <Col xs={6}>
+                                        <Form.Group className="mb-3" controlId="meal">
+                                            <Form.Label>Meal:</Form.Label>
+                                            <Form.Control type="text" name="meal" placeholder="Enter meal name eg. lunch..." value={input.meal} onChange={event => handleMealsForm(index, event)} />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Form.Group className="mb-3" controlId="calories">
+                                            <Form.Label>Calories Consumed:</Form.Label>
+                                            <Form.Control type="text" name="calories" placeholder="Enter calories consumed..." value={input.calories} onChange={event => handleMealsForm(index, event)} />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                            )
+                        })}
+                        <Row>
+                            <Col xs={6}>
+                                <ButtonGroup aria-label="mealFormChangeButtons">
+                                    <Button variant="primary" onClick={addFields}>Add Meal</Button>
+                                    <Button variant="danger" onClick={removeFields}>Remove Meal</Button>
+                                </ButtonGroup>
+                            </Col>
+                            <Col xs={6}>
+                                <ButtonGroup className="float-end" aria-label="mealSubmitButtons">
+                                    {/* {isEditModal && <Button variant="danger" onClick={handleDelete}>Delete Workout</Button>} */}
+                                    <Button variant="success" onClick={handleSubmit}>Enter</Button>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </Container>
+                </Form>
+            </Modal.Body>}
             {(isWorkoutModal || isEditModal) && <Modal.Body>
                 <Form>
                     <Container>
@@ -104,7 +158,7 @@ export default function Popup({
                                 </ButtonGroup>
                             </Col>
                             <Col xs={6}>
-                                <ButtonGroup className="float-end" aria-label="formChangeButtons">
+                                <ButtonGroup className="float-end" aria-label="workoutSubmitButtons">
                                     {isEditModal && <Button variant="danger" onClick={handleDelete}>Delete Workout</Button>}
                                     <Button variant="success" onClick={handleSubmit}>Enter</Button>
                                 </ButtonGroup>

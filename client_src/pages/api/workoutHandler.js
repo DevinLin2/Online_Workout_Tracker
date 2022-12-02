@@ -27,11 +27,11 @@ export default async function handler(req, res) {
         case 'GET':
             result = await getWorkout();
             res.statusCode = 200;
-            res.json({...result, message: `workout sent`});
+            res.json({...result});
             break;
         case 'POST':
             result = await createWorkout(username, title, date, startTime, endTime, exercises);
-            res.json({...result, message: `workout created`});
+            res.json({...result});
             res.statusCode = 200;
             break;
         case 'PUT':
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
             oldStartTime = data.oldStartTime;
             oldEndTime = data.oldEndTime;
             result = await updateWorkout(username, title, date, startTime, endTime, exercises, oldTitle, oldDate, oldStartTime, oldEndTime);
-            res.json({...result, message: `workout updated`});
+            res.json({...result});
             res.statusCode = 200;
             break;
         case 'DELETE':
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
             oldStartTime = data.oldStartTime;
             oldEndTime = data.oldEndTime;
             result = await deleteWorkout(username, oldTitle, oldDate, oldStartTime, oldEndTime);
-            res.json({...result, message: `workout deleted`});
+            res.json({...result});
             res.statusCode = 200;
             break;
         default:
