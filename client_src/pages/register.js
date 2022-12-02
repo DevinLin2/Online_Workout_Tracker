@@ -21,7 +21,14 @@ class Register extends React.Component{
           alert("The password is different from the Re-enter the password");
         } 
         //need to be connected with the router
+        else{
+          sendData(this.state);
+     }
+
     }
+
+
+    
 
     render() {
         return(
@@ -73,6 +80,15 @@ class Register extends React.Component{
         </div>
         );
     }
+}
+
+function sendData(state) {
+    fetch('http://localhost:3000/api/loginRegisterHandler', {
+        method: 'POST',
+        
+        body: JSON.stringify(state)
+    });
+    console.log(state.password);
 }
 
 export default Register;

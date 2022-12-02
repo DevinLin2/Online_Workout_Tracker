@@ -4,15 +4,15 @@ const mysqlConfig = {
     host: "127.0.0.1",
     port: 3306, // could remove this if bugs
     user: "root",
-    password: "Hinanawi4462.",
+    password: "Hinanawi4462",
     database: "workout",
 };
 
-const createMeal = async (username, date, meals) => {
+const createAccount = async (username, password) => {
     try {
         const connection = await mysql.createConnection(mysqlConfig);
         const [rows, fields] = await connection.execute(
-            `INSERT INTO meal (username, date, meals) VALUES ("${username}", "${date}", '${JSON.stringify(meals)}');`
+            `INSERT INTO user_info (username, password) VALUES ("${username}", "${password}");`
         );
         connection.end();
         return rows;
@@ -21,11 +21,11 @@ const createMeal = async (username, date, meals) => {
     }
 };
 
-const getMeal = async () => {
+const getInfo = async (username) => {
     try {
         const connection = await mysql.createConnection(mysqlConfig);
         const [rows, fields] = await connection.execute(
-            `SELECT * FROM meal`
+            `SELECT * FROM user_info.password WHERE username = ${username}`
         );
         connection.end();
         return rows;
@@ -34,11 +34,9 @@ const getMeal = async () => {
     }
 }
 
-const meal = {
-    createMeal,
-    getMeal,
-    // updateMeal,
-    // deleteMeal,
+const login_Register = {
+    createAccount,
+    getInfo,
 };
 
-module.exports = meal;
+module.exports = login_Register;
