@@ -46,10 +46,10 @@ let emptyExercises;
 
 export async function getStaticProps() {
     const workoutRes = await fetch('http://localhost:3000/api/workoutHandler');
-    const workoutprops = await workoutRes.json();
+    const workoutProps = await workoutRes.json();
     const mealRes = await fetch('http://localhost:3000/api/mealHandler');
     const mealProps = await mealRes.json();
-    const props = {workoutprops, mealProps}
+    const props = {workoutProps, mealProps}
     return {
         props: {
             props,
@@ -60,20 +60,26 @@ export async function getStaticProps() {
 export default function Homepage({ props }) {
 
     useEffect(() => {
-        // console.log(props);
-        const importedData = Object.entries(props);
-        console.log(importedData[1]);
-        // importedData.pop(); // remove this
-        // const importedExercisesArray = [];
-        // for (let i = 0; i < importedData.length; i++) {
-        //     const newData = {};
-        //     newData.title = importedData[i][1].title;
-        //     newData.startDate = moment(importedData[i][1].date + " " + importedData[i][1].startTime).toDate();
-        //     newData.endDate = moment(importedData[i][1].date + " " + importedData[i][1].endTime).toDate();
-        //     newData.exercises = importedData[i][1].exercises;
-        //     importedExercisesArray.push(newData);
-        // }
-        // setAllEvents(importedExercisesArray); // CHANGE ALLEVENTS ARRAY TO MATCH DATE FORMAT
+        const events = [];
+        const workoutProps = Object.entries(props.workoutProps);
+        const mealProps = Object.entries(props.mealProps);
+        for (let i = 0; i < workoutProps.length; i++) {
+            const data = {};
+            data.title = workoutProps[i][1].title;
+            data.startDate = moment(workoutProps[i][1].date + " " + workoutProps[i][1].startTime).toDate();
+            data.endDate = moment(workoutProps[i][1].date + " " + workoutProps[i][1].endTime).toDate();
+            data.exercises = workoutProps[i][1].exercises;
+            events.push(data);
+        }
+        for (let i = 0; i < mealProps.length; i++) {
+            const data = {};
+            data.title = "Meal";
+            data.startDate = moment(mealProps[i][1].date).toDate();
+            data.endDate = moment(mealProps[i][1].date).toDate();
+            data.meals = mealProps[i][1].meals;
+            events.push(data);
+        }
+        setAllEvents(events);
     }, []);
 
     useEffect(() => {
