@@ -1,50 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faDumbbell,
 } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
-class Register extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            username: "",
-            password: "",
-            Reenterpassword: ""
-        };
-    }
+export default function Register() {
+    const [state, setState] = useState({ username: "", password: "", passwordMatch: "" });
+    const router = useRouter();
 
-    handleRegister() {
-        if (this.state.username=="") {
-          alert("Please enter the username");
-        } else if(this.state.password==""){
-          alert("Please enter the password");
-        } else if(this.state.Reenterpassword==""){
-          alert("Please Re-enter the password");
-        } else if(this.state.Reenterpassword!=this.state.password){
-          alert("The password is different from the Re-enter the password");
-        } 
+    function handleRegister(e) {
+        e.preventDefault();
+        if (state.username == "") {
+            alert("Please enter the username");
+        } else if (state.password == "") {
+            alert("Please enter the password");
+        } else if (state.passwordMatch == "") {
+            alert("Please Re-enter the password");
+        } else if (state.passwordMatch != state.password) {
+            alert("The password is different from the Re-enter the password");
+        }
         //need to be connected with the router
-        else{
-          sendData(this.state);
-     }
+        else {
+            sendData(state);
+            router.replace("/login");
+        }
 
     }
 
-
-    
-
-    render() {
-        return(
+    return (
         <div>
             <Navbar bg="dark" variant="dark">
-                    <Container fluid>
-                        <Navbar.Brand href="#">
-                            <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
-                        </Navbar.Brand>
-                    </Container>
+                <Container fluid>
+                    <Navbar.Brand href="#">
+                        <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
+                    </Navbar.Brand>
+                </Container>
             </Navbar>
             <div className="login">
                 <h1>Online Workout Tracker Register</h1>
@@ -52,58 +46,57 @@ class Register extends React.Component{
                     <p>Username</p>
                     <div className="formItem">
                         <input
-                            label="Username" 
-                            type="text" 
+                            label="Username"
+                            type="text"
                             placeholder="Enter Username"
-                            value={this.state.username}
-                            onChange={(e)=>{
-                                this.setState({username: e.target.value})
+                            value={state.username}
+                            onChange={(e) => {
+                                setState({ ...state, username: e.target.value })
                             }}
-                        />  
+                        />
                     </div>
 
                     <p>Password</p>
                     <div className="formItem">
-                        <input 
-                            type="text" 
-                            placeholder="Enter Password" 
-                            value={this.state.password}
-                            onChange={(e)=>{
-                                this.setState({password: e.target.value})
+                        <input
+                            type="password"
+                            placeholder="Enter Password"
+                            value={state.password}
+                            onChange={(e) => {
+                                setState({ ...state, password: e.target.value })
                             }}
                         />
                     </div>
 
                     <p>Re-Enter Password</p>
                     <div className="formItem">
-                        <input 
-                            type="text" 
-                            placeholder="Re-Enter Password" 
-                            value={this.state.Reenterpassword}
-                            onChange={(e)=>{
-                                this.setState({Reenterpassword: e.target.value})
+                        <input
+                            type="password"
+                            placeholder="Re-Enter Password"
+                            value={state.passwordMatch}
+                            onChange={(e) => {
+                                setState({ ...state, passwordMatch: e.target.value })
                             }}
                         />
                     </div>
 
                     <div className="formItemBtn">
-                        <button className="loginBtn" onClick={() => {this.handleRegister();}}>Register</button>
+                        <button className="loginBtn" onClick={(e) => { handleRegister(e); }}>Register</button>
                     </div>
-
+                    <div class="float-end">
+                        <Link href="/login">Back to login</Link>
+                    </div>
                 </form>
             </div>
         </div>
-        );
-    }
+    );
 }
 
 function sendData(state) {
     fetch('http://localhost:3000/api/loginRegisterHandler', {
         method: 'POST',
-        
+
         body: JSON.stringify(state)
     });
     console.log(state.password);
 }
-
-export default Register;

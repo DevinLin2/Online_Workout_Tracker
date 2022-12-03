@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     let result;
     switch (method) {
         case 'GET':
-            console.log("here");
+            // console.log("here");
             result = await getInfo(username);
             res.statusCode = 200;
             res.json({ ...result});

@@ -229,7 +229,7 @@ export default function Homepage({ props }) {
         let date = moment(newMeal.date).format("YYYY/MM/DD");
         for (let i = 0; i < allEvents.length; i++) {
             if (allEvents[i].title == "Meal" && moment(allEvents[i].startDate).format("YYYY/MM/DD") == date) {
-                console.log("here");
+                // console.log("here");
                 isDuplicateMeal = true;
                 break;
             }
