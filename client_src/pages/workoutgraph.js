@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import ReactEcharts from 'echarts-for-react';
-import 'echarts/lib/chart/line';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faDumbbell,
+} from "@fortawesome/free-solid-svg-icons";
 
 class workOutEcharts extends Component {
     constructor(props){
@@ -47,10 +52,18 @@ class workOutEcharts extends Component {
         const{weight} = this.state;
         const{name} = this.state;
         return (
-
-            <div className="graph">
-                <h1 align={"center"}>{name}'s Workout Progress graph</h1>
-                <ReactEcharts option={this.getOption(date,weight)} />
+            <div>
+                <Navbar bg="dark" variant="dark">
+                    <Container fluid>
+                        <Navbar.Brand href="#">
+                            <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
+                        </Navbar.Brand>
+                    </Container>
+                </Navbar>
+                <div className="graph">
+                    <h1 align={"center"}>{name}'s Workout Progress graph</h1>
+                    <ReactEcharts option={this.getOption(date,weight)} />
+                </div>
             </div>
         );
     }
