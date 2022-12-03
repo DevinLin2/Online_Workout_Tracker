@@ -1,4 +1,10 @@
 import React from "react";
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faDumbbell,
+} from "@fortawesome/free-solid-svg-icons";
 
 class Login extends React.Component{
     constructor(props){
@@ -21,39 +27,48 @@ class Login extends React.Component{
 
     render() {
         return(
-        <div className="login">
-            <h1>Online Workout Tracker</h1>
-            <form className="form">s
-                <p>Username</p>
-                <div className="formItem">
-                    <input
-                        label="Username" 
-                        type="text" 
-                        placeholder="Enter Username"
-                        value={this.state.username}
-                        onChange={(e)=>{
+        <div>
+            <Navbar bg="dark" variant="dark">
+                    <Container fluid>
+                        <Navbar.Brand href="#">
+                            <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
+                        </Navbar.Brand>
+                    </Container>
+            </Navbar>
+            <div className="login">
+                <h1>Workout Tracker</h1>
+                <form className="form">
+                    <p>Username</p>
+                    <div className="formItem">
+                        <input
+                            label="Username" 
+                            type="text" 
+                            placeholder="Enter Username"
+                            value={this.state.username}
+                            onChange={(e)=>{
                             this.setState({username: e.target.value})
-                        }}
-                    />
-                </div>
+                             }}
+                            />
+                    </div>
 
-                <p>Password</p>
-                <div className="formItem">
-                    <input 
-                        type="text" 
-                        placeholder="Enter Password" 
-                        value={this.state.password}
-                        onChange={(e)=>{
+                    <p>Password</p>
+                    <div className="formItem">
+                        <input 
+                            type="text" 
+                            placeholder="Enter Password" 
+                            value={this.state.password}
+                            onChange={(e)=>{
                             this.setState({password: e.target.value})
-                        }}
-                    />
-                </div>
+                            }}
+                        />
+                    </div>
 
-                <div className="formItemBtn">
-                    <button className="loginBtn" onClick={() => {this.handleLogin();}}>Login</button>
-                </div>
+                    <div className="formItemBtn">
+                        <button className="loginBtn" onClick={() => {this.handleLogin();}}>Login</button>
+                    </div>
 
-            </form>
+                </form>
+            </div>
         </div>
         );
     }
