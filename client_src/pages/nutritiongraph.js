@@ -1,62 +1,57 @@
 import React, { Component } from 'react';
 import ReactEcharts from 'echarts-for-react';
-import 'echarts/lib/chart/pie';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faDumbbell,
+} from "@fortawesome/free-solid-svg-icons";
 
 class workOutEcharts extends Component {
     constructor(props){
         super(props);
         this.state = {
-            meal: [],
-            cal: [],
-            name:""
+            piedata:[],
+            meal:[],
+            ID:''
         };
     }
 
-    usersWorkoutDate = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    usersWorkoutweight = [520, 932, 901, 1934, 1290, 1330, 2000];
-    username = "Tom";
+    usersMeal = ['Grain', 'Beef', 'Lamb', 'vegetable'];//should be connected with the backend
+    mealsCal = [100, 1000, 500, 200];//should be connected with the backend
+    username = "Tom";//should be connected with the backend
 
     componentDidMount() {
-        console.log("1");
+        var usedata =[];
+        for(var i=0; i<this.usersMeal.length; i++){
+            usedata.push({name: this.usersMeal[i],value:this.mealsCal[i]})
+        }
         this.setState(
             {
-                date: this.usersWorkoutDate,//should be connected with back-end(users' workout date)
-                weight: this.usersWorkoutweight,//should be connected with back-end(users' used weight)
-                name: this.username //should be connected with back-end(users' name)
+                piedata: usedata,
+                meal: this.usersMeal,
+                ID: this.username
             }
         )
     };
 
-    getOption = ()=>{
+    getOption = (piedata,meal)=>{
         let option = {
-            title: {
-                text: '用户订单',
-                x: 'center'
-            },
             tooltip : {
                 trigger: 'item',
-                //提示框浮层内容格式器，支持字符串模板和回调函数形式。
                 formatter: "{a} <br/>{b} : {c} ({d}%)" 
             },
             legend: {
                 orient: 'vertical',
                 top: 20,
                 right: 5,
-                data: ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
+                data: meal
             },
             series : [
                 {
-                    name:'订单量',
+                    name:'Nutrition Data',
                     type:'pie',
-                    data:[
-                        {value:1000, name:'星期一'},
-                        {value:1500, name:'星期二'},
-                        {value:2000, name:'星期三'},
-                        {value:2500, name:'星期四'},
-                        {value:3000, name:'星期五'},
-                        {value:2300, name:'星期六'},
-                        {value:1600, name:'星期日'}
-                    ],
+                    data:piedata,
                 }
             ]
         }
@@ -64,11 +59,23 @@ class workOutEcharts extends Component {
     }
 
     render() {
+        const{ID}=this.state;
+        const{piedata}=this.state;
+        const{meal}=this.state;
         return (
+        <div>
+            <Navbar bg="dark" variant="dark">
+                    <Container fluid>
+                        <Navbar.Brand href="#">
+                            <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
+                        </Navbar.Brand>
+                    </Container>
+            </Navbar>
             <div className="graph">
-                <h1 align={"center"}>'s Nutrition graph</h1>
-                <ReactEcharts option={this.getOption()} />
+                <h1 align={"center"}>{ID}'s Nutrition graph</h1>
+                <ReactEcharts option={this.getOption(piedata,meal)} />
             </div>
+        </div>
         );
     }
 }
