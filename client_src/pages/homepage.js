@@ -44,6 +44,9 @@ let emptyDate;
 let emptyTime;
 let emptyExercises;
 let oldMealDate;
+let isDuplicateMeal;
+let emptyMealDate;
+let emptyMeals;
 
 export async function getStaticProps() {
     const workoutRes = await fetch('http://localhost:3000/api/workoutHandler');
@@ -207,7 +210,6 @@ export default function Homepage({ props }) {
 
     function checkForEmptyInputs() {
         newWorkout.exercises = newExercise;
-        console.log(newWorkout.exercises);
         if (newWorkout.title == "") emptyName = true;
         if (newWorkout.date == "Invalid date") emptyDate = true;
         if (newWorkout.startTime == "" || newWorkout.endTime == "") emptyTime = true;
@@ -217,6 +219,31 @@ export default function Homepage({ props }) {
             for (let i = 0; i < newWorkout.exercises.length; i++) {
                 if (newWorkout.exercises[i].exercise == null) {
                     emptyExercises = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    function checkForDuplicateMeals() {
+        let date = moment(newMeal.date).format("YYYY/MM/DD");
+        for (let i = 0; i < allEvents.length; i++) {
+            if (allEvents[i].title == "Meal" && moment(allEvents[i].startDate).format("YYYY/MM/DD") == date) {
+                console.log("here");
+                isDuplicateMeal = true;
+                break;
+            }
+        }
+    }
+
+    function checkForEmptyMeals() {
+        if (moment(newMeal.date).toDate() == "Invalid Date") emptyMealDate = true;
+        if (newMeal.meals.length == 0) {
+            emptyMeals = true;
+        } else {
+            for (let i = 0; i < newMeal.meals.length; i++) {
+                if (newMeal.meals[i].meal == "") {
+                    emptyMeals = true;
                     break;
                 }
             }
@@ -502,19 +529,41 @@ export default function Homepage({ props }) {
     function handleNewMeal(e) {
         e.preventDefault();
         newMeal.meals = meals;
-        const calendarDisplayMeal = {
-            title: newMeal.title,
-            startDate: moment(newMeal.date).toDate(),
-            endDate: moment(newMeal.date).toDate(),
-            meals: newMeal.meals,
-        };
-        setAllEvents([...allEvents, calendarDisplayMeal]);
-        sendMealData();
-        handleMealFormClose();
-        toast.notify('Meal log added.', {
-            duration: 3,
-            type: "success"
-        });
+        checkForDuplicateMeals();
+        checkForEmptyMeals();
+        if (isDuplicateMeal) {
+            toast.notify('There is already a meal log for this date.', {
+                duration: 3,
+                type: "error"
+            });
+            isDuplicateMeal = false;
+        } else if (emptyMealDate) {
+            toast.notify('Please enter a date for this meal log.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyMealDate = false;
+        } else if (emptyMeals) {
+            toast.notify('Please enter at least one meal.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyMeals = false;
+        } else {
+            const calendarDisplayMeal = {
+                title: newMeal.title,
+                startDate: moment(newMeal.date).toDate(),
+                endDate: moment(newMeal.date).toDate(),
+                meals: newMeal.meals,
+            };
+            setAllEvents([...allEvents, calendarDisplayMeal]);
+            sendMealData();
+            handleMealFormClose();
+            toast.notify('Meal log added.', {
+                duration: 3,
+                type: "success"
+            });
+        }
     }
 
     function deleteCalendarMeals() {
@@ -529,20 +578,42 @@ export default function Homepage({ props }) {
     function handleUpdateMeal(e) {
         e.preventDefault();
         newMeal.meals = meals;
-        deleteCalendarMeals();
-        const calendarDisplayMeal = {
-            title: newMeal.title,
-            startDate: moment(newMeal.date).toDate(),
-            endDate: moment(newMeal.date).toDate(),
-            meals: newMeal.meals,
-        };
-        setAllEvents([...allEvents, calendarDisplayMeal]);
-        updateMealData();
-        handleMealEditFormClose();
-        toast.notify('Meal log updated.', {
-            duration: 3,
-            type: "success"
-        });
+        checkForDuplicateMeals();
+        checkForEmptyMeals();
+        if (isDuplicateMeal) {
+            toast.notify('There is already a meal log for this date.', {
+                duration: 3,
+                type: "error"
+            });
+            isDuplicateMeal = false;
+        } else if (emptyMealDate) {
+            toast.notify('Please enter a date for this meal log.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyMealDate = false;
+        } else if (emptyMeals) {
+            toast.notify('Please enter at least one meal.', {
+                duration: 3,
+                type: "error"
+            });
+            emptyMeals = false;
+        } else {
+            deleteCalendarMeals();
+            const calendarDisplayMeal = {
+                title: newMeal.title,
+                startDate: moment(newMeal.date).toDate(),
+                endDate: moment(newMeal.date).toDate(),
+                meals: newMeal.meals,
+            };
+            setAllEvents([...allEvents, calendarDisplayMeal]);
+            updateMealData();
+            handleMealEditFormClose();
+            toast.notify('Meal log updated.', {
+                duration: 3,
+                type: "success"
+            });
+        }
     }
 
     return (
