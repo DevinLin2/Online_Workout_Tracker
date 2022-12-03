@@ -43,13 +43,14 @@ let emptyName;
 let emptyDate;
 let emptyTime;
 let emptyExercises;
+let oldMealDate;
 
 export async function getStaticProps() {
     const workoutRes = await fetch('http://localhost:3000/api/workoutHandler');
     const workoutProps = await workoutRes.json();
     const mealRes = await fetch('http://localhost:3000/api/mealHandler');
     const mealProps = await mealRes.json();
-    const props = {workoutProps, mealProps}
+    const props = { workoutProps, mealProps }
     return {
         props: {
             props,
@@ -101,6 +102,7 @@ export default function Homepage({ props }) {
     const [showWorkoutEditForm, setShowWorkoutEditForm] = useState(false);
     const [showWorkoutView, setShowWorkoutView] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showMealDeleteConfirmation, setShowMealDeleteConfirmation] = useState(false);
     const [showMealForm, setShowMealForm] = useState(false);
     const [showMealEditForm, setShowMealEditForm] = useState(false);
     const [showMealViewForm, setShowMealViewForm] = useState(false);
@@ -336,6 +338,16 @@ export default function Homepage({ props }) {
         setShowWorkoutEditForm(true);
     }
 
+    function handleDeleteMeal() {
+        setShowMealEditForm(false);
+        setShowMealDeleteConfirmation(true);
+    }
+
+    function handleCloseMealConfirmation() {
+        setShowMealDeleteConfirmation(false);
+        setShowMealEditForm(true);
+    }
+
     function deleteSelectedWorkout() {
         for (let i = 0; i < allEvents.length; i++) {
             if (allEvents[i].title == oldTitle && moment(allEvents[i].startDate).format("YYYY/MM/DD") == oldDate && moment(allEvents[i].startDate).format("HH:mm") == oldStartTime && moment(allEvents[i].endDate).format("HH:mm") == oldEndTime) {
@@ -365,28 +377,43 @@ export default function Homepage({ props }) {
     const onDoubleClickEvent = useCallback((e) => {
         window.clearTimeout(clickRef?.current)
         clickRef.current = window.setTimeout(() => {
-            handleWorkoutEditFormShow();
-            e.date = moment(e.startDate).format("YYYY/MM/DD");
-            e.startTime = moment(e.startDate).format("HH:mm");
-            e.endTime = moment(e.endDate).format("HH:mm");
-            setNewWorkout(e);
-            setNewExercise(e.exercises);
-            oldDate = moment(e.startDate).format("YYYY/MM/DD");
-            oldTitle = e.title;
-            oldStartTime = moment(e.startDate).format("HH:mm");
-            oldEndTime = moment(e.endDate).format("HH:mm");
+            if (e.title == "Meal") {
+                handleMealEditFormShow();
+                e.date = moment(e.startDate).format("YYYY/MM/DD");
+                setNewMeal(e);
+                setMeals(e.meals);
+                oldMealDate = moment(e.startDate).format("YYYY-MM-DD");
+            } else {
+                handleWorkoutEditFormShow();
+                e.date = moment(e.startDate).format("YYYY/MM/DD");
+                e.startTime = moment(e.startDate).format("HH:mm");
+                e.endTime = moment(e.endDate).format("HH:mm");
+                setNewWorkout(e);
+                setNewExercise(e.exercises);
+                oldDate = moment(e.startDate).format("YYYY/MM/DD");
+                oldTitle = e.title;
+                oldStartTime = moment(e.startDate).format("HH:mm");
+                oldEndTime = moment(e.endDate).format("HH:mm");
+            }
         }, 250)
     }, [])
 
     const onSelectEvent = useCallback((e) => {
         window.clearTimeout(clickRef?.current)
         clickRef.current = window.setTimeout(() => {
-            handleWorkoutViewShow();
-            e.date = moment(e.startDate).format("YYYY/MM/DD");
-            e.startTime = moment(e.startDate).format("hh:mm a");
-            e.endTime = moment(e.endDate).format("hh:mm a");
-            setNewWorkout(e);
-            setNewExercise(e.exercises);
+            if (e.title == "Meal") {
+                handleMealViewFormShow();
+                e.date = moment(e.startDate).format("YYYY/MM/DD");
+                setNewMeal(e);
+                setMeals(e.meals);
+            } else {
+                handleWorkoutViewShow();
+                e.date = moment(e.startDate).format("YYYY/MM/DD");
+                e.startTime = moment(e.startDate).format("hh:mm a");
+                e.endTime = moment(e.endDate).format("hh:mm a");
+                setNewWorkout(e);
+                setNewExercise(e.exercises);
+            }
         }, 250)
     }, [])
 
@@ -401,12 +428,29 @@ export default function Homepage({ props }) {
         handleWorkoutEditFormShow();
     }
 
+    function handleMealEditClick() {
+        oldMealDate = moment(newMeal.date).format("YYYY-MM-DD");
+        setShowMealViewForm(false);
+        handleMealEditFormShow();
+    }
+
     function onConfirmdeleteWorkoutData() {
         deleteSelectedWorkout();
         deleteWorkoutData();
         handleWorkoutEditFormClose();
         setShowConfirmation(false);
         toast.notify('Workout deleted.', {
+            duration: 3,
+            type: "success"
+        });
+    }
+
+    function onConfirmDeleteMeal() {
+        deleteCalendarMeals();
+        deleteMealData();
+        handleMealEditFormClose();
+        setShowMealDeleteConfirmation(false);
+        toast.notify('Meal log deleted.', {
             duration: 3,
             type: "success"
         });
@@ -437,6 +481,24 @@ export default function Homepage({ props }) {
         });
     }
 
+    function updateMealData() {
+        newMeal.username = "admin"
+        newMeal.oldDate = oldMealDate;
+        fetch('http://localhost:3000/api/mealHandler', {
+            method: 'PUT',
+            body: JSON.stringify(newMeal)
+        });
+    }
+
+    function deleteMealData() {
+        newMeal.username = "admin"
+        newMeal.oldDate = oldMealDate;
+        fetch('http://localhost:3000/api/mealHandler', {
+            method: 'DELETE',
+            body: JSON.stringify(newMeal)
+        });
+    }
+
     function handleNewMeal(e) {
         e.preventDefault();
         newMeal.meals = meals;
@@ -450,6 +512,34 @@ export default function Homepage({ props }) {
         sendMealData();
         handleMealFormClose();
         toast.notify('Meal log added.', {
+            duration: 3,
+            type: "success"
+        });
+    }
+
+    function deleteCalendarMeals() {
+        for (let i = 0; i < allEvents.length; i++) {
+            if (allEvents[i].title == "Meal" && moment(allEvents[i].startDate).format("YYYY-MM-DD") == oldMealDate) {
+                allEvents.splice(i, 1);
+                // break;
+            }
+        }
+    }
+
+    function handleUpdateMeal(e) {
+        e.preventDefault();
+        newMeal.meals = meals;
+        deleteCalendarMeals();
+        const calendarDisplayMeal = {
+            title: newMeal.title,
+            startDate: moment(newMeal.date).toDate(),
+            endDate: moment(newMeal.date).toDate(),
+            meals: newMeal.meals,
+        };
+        setAllEvents([...allEvents, calendarDisplayMeal]);
+        updateMealData();
+        handleMealEditFormClose();
+        toast.notify('Meal log updated.', {
             duration: 3,
             type: "success"
         });
@@ -473,7 +563,7 @@ export default function Homepage({ props }) {
                 </Container>
             </Navbar>
             <ToastContainer align={"right"} />
-            <Modal show={showConfirmation} onHide={handleCloseConfirmation} animation={false} dialogClassName="workoutModal">
+            <Modal show={showConfirmation} onHide={handleCloseConfirmation} animation={false} dialogClassName="confirmation">
                 <Modal.Header closeButton>
                     <Modal.Title>Confirmation</Modal.Title>
                 </Modal.Header>
@@ -487,6 +577,24 @@ export default function Homepage({ props }) {
                         </Col>
                         <Col xs={6}>
                             <Button className="float-end" variant="success" onClick={onConfirmdeleteWorkoutData}>Yes</Button>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+            </Modal>
+            <Modal show={showMealDeleteConfirmation} onHide={handleCloseMealConfirmation} animation={false} dialogClassName="mealDeleteConfirmation">
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>
+                        Are you sure you want to delete this meal log? This action cannot be undone.
+                    </p>
+                    <Row>
+                        <Col xs={6}>
+                            <Button variant="danger" onClick={handleCloseMealConfirmation}>No</Button>
+                        </Col>
+                        <Col xs={6}>
+                            <Button className="float-end" variant="success" onClick={onConfirmDeleteMeal}>Yes</Button>
                         </Col>
                     </Row>
                 </Modal.Body>
@@ -535,6 +643,27 @@ export default function Homepage({ props }) {
                 addFields={addMealFields}
                 removeFields={removeMealFields}
                 handleSubmit={handleNewMeal}
+            />
+            <Popup
+                show={showMealEditForm}
+                onHide={handleMealEditFormClose}
+                isMealEditModal={true}
+                newMeal={newMeal}
+                setNewMeal={setNewMeal}
+                meals={meals}
+                handleMealsForm={handleMealsForm}
+                addFields={addMealFields}
+                removeFields={removeMealFields}
+                handleSubmit={handleUpdateMeal}
+                handleDelete={handleDeleteMeal}
+            />
+            <Popup
+                show={showMealViewForm}
+                onHide={handleMealViewFormClose}
+                isMealViewModal={true}
+                newMeal={newMeal}
+                meals={meals}
+                handleEdit={handleMealEditClick}
             />
             <Calendar
                 localizer={localizer}

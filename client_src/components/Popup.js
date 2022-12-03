@@ -47,6 +47,12 @@ export default function Popup({
             {isMealModal && <Modal.Header closeButton>
                 <Modal.Title>Meal Log</Modal.Title>
             </Modal.Header>}
+            {isMealEditModal && <Modal.Header closeButton>
+                <Modal.Title>Edit Meal Log</Modal.Title>
+            </Modal.Header>}
+            {isMealViewModal && <Modal.Header closeButton>
+                <Modal.Title>View Meal Log</Modal.Title>
+            </Modal.Header>}
             {(isMealModal || isMealEditModal) && <Modal.Body>
                 <Form>
                     <Container>
@@ -83,7 +89,7 @@ export default function Popup({
                             </Col>
                             <Col xs={6}>
                                 <ButtonGroup className="float-end" aria-label="mealSubmitButtons">
-                                    {/* {isEditModal && <Button variant="danger" onClick={handleDelete}>Delete Workout</Button>} */}
+                                    {isMealEditModal && <Button variant="danger" onClick={handleDelete}>Delete Meal Log</Button>}
                                     <Button variant="success" onClick={handleSubmit}>Enter</Button>
                                 </ButtonGroup>
                             </Col>
@@ -216,6 +222,40 @@ export default function Popup({
                         </tbody>
                     </Table>
                     <Button className="float-end" variant="primary" onClick={handleEdit}>Edit Workout</Button>
+                </Container>
+            </Modal.Body>}
+            {isMealViewModal && <Modal.Body>
+                <Container>
+                    <Card>
+                        <Card.Header>Meal Log Information</Card.Header>
+                        <Card.Body>
+                            <Row>
+                                <Col xs={3}>
+                                    <strong>Date:</strong> {newMeal.date}
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                    <p></p>
+                    <Table bordered>
+                        <thead>
+                            <tr>
+                                <th>Meal Name</th>
+                                <th>Calories Consumed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {meals.map((meal) => {
+                                return (
+                                    <tr>
+                                        <td>{meal.meal}</td>
+                                        <td>{meal.calories}</td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </Table>
+                    <Button className="float-end" variant="primary" onClick={handleEdit}>Edit Meal Log</Button>
                 </Container>
             </Modal.Body>}
         </Modal>
