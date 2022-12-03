@@ -23,7 +23,7 @@ class Login extends React.Component{
         return(
         <div className="login">
             <h1>Online Workout Tracker</h1>
-            <form className="form">s
+            <form className="form">
                 <p>Username</p>
                 <div className="formItem">
                     <input
