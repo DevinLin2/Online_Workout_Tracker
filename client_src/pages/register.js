@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Head from 'next/head'
 
 export default function Register() {
     const [state, setState] = useState({ username: "", password: "", passwordMatch: "" });
@@ -33,6 +34,10 @@ export default function Register() {
 
     return (
         <div>
+            <Head>
+                <title>Workout Tracker</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
             <Navbar bg="dark" variant="dark">
                 <Container fluid>
                     <Navbar.Brand href="#">
@@ -98,5 +103,5 @@ function sendData(state) {
 
         body: JSON.stringify(state)
     });
-    console.log(state.password);
+    // console.log(state.password);
 }

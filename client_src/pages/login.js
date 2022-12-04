@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 export async function getStaticProps() {
     const res = await fetch('http://localhost:3000/api/loginRegisterHandler');
@@ -32,6 +33,10 @@ export default function Login({ props }) {
             for (let i = 0; i < importedProps.length; i++) {
                 if (state.username == importedProps[i][1].username && state.password == importedProps[i][1].password) {
                     console.log("pass");
+                    router.replace({
+                        pathname: '/homepage',
+                        query: { username: state.username },
+                    });
                 }
             }
         } else {
@@ -41,6 +46,10 @@ export default function Login({ props }) {
 
     return (
         <div>
+            <Head>
+                <title>Workout Tracker</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
             <Navbar bg="dark" variant="dark">
                 <Container fluid>
                     <Navbar.Brand href="#">

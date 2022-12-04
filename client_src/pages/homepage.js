@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import moment from 'moment';
+import Head from 'next/head'
 import Popup from "../components/Popup";
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
@@ -20,6 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faDumbbell,
 } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from 'next/router'
 
 const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -63,35 +65,6 @@ export async function getStaticProps() {
 
 export default function Homepage({ props }) {
 
-    useEffect(() => {
-        const events = [];
-        const workoutProps = Object.entries(props.workoutProps);
-        const mealProps = Object.entries(props.mealProps);
-        for (let i = 0; i < workoutProps.length; i++) {
-            const data = {};
-            data.title = workoutProps[i][1].title;
-            data.startDate = moment(workoutProps[i][1].date + " " + workoutProps[i][1].startTime).toDate();
-            data.endDate = moment(workoutProps[i][1].date + " " + workoutProps[i][1].endTime).toDate();
-            data.exercises = workoutProps[i][1].exercises;
-            events.push(data);
-        }
-        for (let i = 0; i < mealProps.length; i++) {
-            const data = {};
-            data.title = "Meal";
-            data.startDate = moment(mealProps[i][1].date).toDate();
-            data.endDate = moment(mealProps[i][1].date).toDate();
-            data.meals = mealProps[i][1].meals;
-            events.push(data);
-        }
-        setAllEvents(events);
-    }, []);
-
-    useEffect(() => {
-        return () => {
-            window.clearTimeout(clickRef?.current)
-        }
-    }, [])
-
     const [newWorkout, setNewWorkout] = useState({ title: "", date: "", startTime: "", endTime: "", exercises: [] });
     const [newExercise, setNewExercise] = useState([
         { exercise: "", sets: "", reps: "", weight: "" }
@@ -109,7 +82,47 @@ export default function Homepage({ props }) {
     const [showMealForm, setShowMealForm] = useState(false);
     const [showMealEditForm, setShowMealEditForm] = useState(false);
     const [showMealViewForm, setShowMealViewForm] = useState(false);
-    const clickRef = useRef(null)
+    const clickRef = useRef(null);
+    const router = useRouter();
+    const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        if (router.isReady) {
+            const events = [];
+            setUsername(router.query.username);
+            console.log(router.query);
+            // console.log(username);
+            const workoutProps = Object.entries(props.workoutProps);
+            const mealProps = Object.entries(props.mealProps);
+            for (let i = 0; i < workoutProps.length; i++) {
+                if (workoutProps[i][1].username == router.query.username) {
+                    const data = {};
+                    data.title = workoutProps[i][1].title;
+                    data.startDate = moment(workoutProps[i][1].date + " " + workoutProps[i][1].startTime).toDate();
+                    data.endDate = moment(workoutProps[i][1].date + " " + workoutProps[i][1].endTime).toDate();
+                    data.exercises = workoutProps[i][1].exercises;
+                    events.push(data);
+                }
+            }
+            for (let i = 0; i < mealProps.length; i++) {
+                if (mealProps[i][1].username == router.query.username) {
+                    const data = {};
+                    data.title = "Meal";
+                    data.startDate = moment(mealProps[i][1].date).toDate();
+                    data.endDate = moment(mealProps[i][1].date).toDate();
+                    data.meals = mealProps[i][1].meals;
+                    events.push(data);
+                }
+            }
+            setAllEvents(events);
+        }
+    }, [router.isReady]);
+
+    useEffect(() => {
+        return () => {
+            window.clearTimeout(clickRef?.current)
+        }
+    }, [])
 
     const handleWorkoutFormShow = () => setShowWorkoutForm(true);
 
@@ -166,7 +179,7 @@ export default function Homepage({ props }) {
     }
 
     function sendWorkoutData() {
-        newWorkout.username = "admin";
+        newWorkout.username = username;
         fetch('http://localhost:3000/api/workoutHandler', {
             method: 'POST',
             body: JSON.stringify(newWorkout)
@@ -174,7 +187,7 @@ export default function Homepage({ props }) {
     }
 
     function updateWorkoutData() {
-        newWorkout.username = "admin";
+        newWorkout.username = username;
         newWorkout.oldStartTime = oldStartTime;
         newWorkout.oldEndTime = oldEndTime;
         newWorkout.oldDate = oldDate;
@@ -186,7 +199,7 @@ export default function Homepage({ props }) {
     }
 
     function deleteWorkoutData() {
-        newWorkout.username = "admin";
+        newWorkout.username = username;
         newWorkout.oldStartTime = oldStartTime;
         newWorkout.oldEndTime = oldEndTime;
         newWorkout.oldDate = oldDate;
@@ -304,6 +317,7 @@ export default function Homepage({ props }) {
 
     function handleUpdateWorkout(e) {
         e.preventDefault();
+        deleteSelectedWorkout();
         checkForDuplicateWorkout();
         checkForEmptyInputs();
         if (isDuplicateWorkout) {
@@ -338,7 +352,6 @@ export default function Homepage({ props }) {
             emptyExercises = false;
         } else {
             // newWorkout.exercises = newExercise;
-            deleteSelectedWorkout();
             const calendarDisplayWorkout = {
                 title: newWorkout.title,
                 startDate: moment(newWorkout.date + " " + newWorkout.startTime).toDate(),
@@ -501,7 +514,7 @@ export default function Homepage({ props }) {
     }
 
     function sendMealData() {
-        newMeal.username = "admin";
+        newMeal.username = username;
         fetch('http://localhost:3000/api/mealHandler', {
             method: 'POST',
             body: JSON.stringify(newMeal)
@@ -509,7 +522,7 @@ export default function Homepage({ props }) {
     }
 
     function updateMealData() {
-        newMeal.username = "admin"
+        newMeal.username = username;
         newMeal.oldDate = oldMealDate;
         fetch('http://localhost:3000/api/mealHandler', {
             method: 'PUT',
@@ -518,7 +531,7 @@ export default function Homepage({ props }) {
     }
 
     function deleteMealData() {
-        newMeal.username = "admin"
+        newMeal.username = username;
         newMeal.oldDate = oldMealDate;
         fetch('http://localhost:3000/api/mealHandler', {
             method: 'DELETE',
@@ -578,6 +591,7 @@ export default function Homepage({ props }) {
     function handleUpdateMeal(e) {
         e.preventDefault();
         newMeal.meals = meals;
+        deleteCalendarMeals();
         checkForDuplicateMeals();
         checkForEmptyMeals();
         if (isDuplicateMeal) {
@@ -599,7 +613,6 @@ export default function Homepage({ props }) {
             });
             emptyMeals = false;
         } else {
-            deleteCalendarMeals();
             const calendarDisplayMeal = {
                 title: newMeal.title,
                 startDate: moment(newMeal.date).toDate(),
@@ -618,6 +631,10 @@ export default function Homepage({ props }) {
 
     return (
         <div className="homepage">
+            <Head>
+                <title>Workout Tracker</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
             <Navbar bg="dark" variant="dark">
                 <Container fluid>
                     <Navbar.Brand href="#">
