@@ -16,10 +16,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { toast, ToastContainer } from 'react-nextjs-toast'
 import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faDumbbell,
+    faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router'
 
@@ -90,7 +92,7 @@ export default function Homepage({ props }) {
         if (router.isReady) {
             const events = [];
             setUsername(router.query.username);
-            console.log(router.query);
+            // console.log(router.query);
             // console.log(username);
             const workoutProps = Object.entries(props.workoutProps);
             const mealProps = Object.entries(props.mealProps);
@@ -640,6 +642,11 @@ export default function Homepage({ props }) {
                     <Navbar.Brand href="#">
                         <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
                     </Navbar.Brand>
+                    <Nav className="me-auto">
+                        <Nav.Link href={'/workoutgraph?username=' + username}>Workout graph</Nav.Link>
+                        <Nav.Link href={'/nutritiongraph?username=' + username}>Nutrition graph</Nav.Link>
+                        <Nav.Link href="/login">Log out</Nav.Link>
+                    </Nav>
                     <ButtonGroup aria-label="formButtoms">
                         <Button variant="info" onClick={handleMealFormShow}>
                             Create Meal Log
