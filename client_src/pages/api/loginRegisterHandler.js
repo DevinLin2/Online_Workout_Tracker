@@ -1,4 +1,4 @@
-import { createAccount } from "../../src/login_Register";
+import { createAccount, getInfo } from "../../src/login_Register";
 
 export default async function handler(req, res) {
     const method = req.method;
@@ -14,13 +14,14 @@ export default async function handler(req, res) {
     switch (method) {
         case 'GET':
             // console.log("here");
-            result = await getInfo(username);
+            result = await getInfo();
+            // console.log(result);
             res.statusCode = 200;
-            res.json({ ...result});
+            res.json({ ...result });
             break;
         case 'POST':
             result = await createAccount(username, password);
-            res.json({ ...result});
+            res.json({ ...result });
             res.statusCode = 200;
             break;
         default:

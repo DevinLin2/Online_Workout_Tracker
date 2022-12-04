@@ -41,9 +41,9 @@ export default function Register() {
                 </Container>
             </Navbar>
             <div className="login">
-                <h1>Online Workout Tracker Register</h1>
+                <h1>Workout Tracker Register</h1>
                 <form className="form">
-                    <p>Username</p>
+                    <p>Username:</p>
                     <div className="formItem">
                         <input
                             label="Username"
@@ -56,7 +56,7 @@ export default function Register() {
                         />
                     </div>
 
-                    <p>Password</p>
+                    <p>Password:</p>
                     <div className="formItem">
                         <input
                             type="password"
@@ -68,7 +68,7 @@ export default function Register() {
                         />
                     </div>
 
-                    <p>Re-Enter Password</p>
+                    <p>Re-Enter Password:</p>
                     <div className="formItem">
                         <input
                             type="password"
@@ -83,7 +83,7 @@ export default function Register() {
                     <div className="formItemBtn">
                         <button className="loginBtn" onClick={(e) => { handleRegister(e); }}>Register</button>
                     </div>
-                    <div class="float-end">
+                    <div className="float-end">
                         <Link href="/login">Back to login</Link>
                     </div>
                 </form>
