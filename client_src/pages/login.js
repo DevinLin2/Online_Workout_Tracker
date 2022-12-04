@@ -25,9 +25,11 @@ export default function Login({ props }) {
     const router = useRouter();
     const importedProps = Object.entries(props);
     // console.log(importedProps);
-    function handleLogin() {
+
+    function handleLogin(e) {
+        e.preventDefault();
         if (state.username && state.password) {
-            for (let i = 0; i < props.length; i++) {
+            for (let i = 0; i < importedProps.length; i++) {
                 if (state.username == importedProps[i][1].username && state.password == importedProps[i][1].password) {
                     console.log("pass");
                 }
@@ -57,7 +59,7 @@ export default function Login({ props }) {
                             placeholder="Enter Username"
                             value={state.username}
                             onChange={(e) => {
-                                setState({ username: e.target.value })
+                                setState({ ...state, username: e.target.value })
                             }}
                         />
                     </div>
@@ -65,17 +67,17 @@ export default function Login({ props }) {
                     <p>Password:</p>
                     <div className="formItem">
                         <input
-                            type="text"
+                            type="password"
                             placeholder="Enter Password"
                             value={state.password}
                             onChange={(e) => {
-                                setState({ password: e.target.value })
+                                setState({ ...state, password: e.target.value })
                             }}
                         />
                     </div>
 
                     <div className="formItemBtn">
-                        <button className="loginBtn" onClick={() => { handleLogin(); }}>Login</button>
+                        <button className="loginBtn" onClick={(e) => { handleLogin(e); }}>Login</button>
                     </div>
                     <Link href="/register">Register</Link>
                     <div className="float-end">
