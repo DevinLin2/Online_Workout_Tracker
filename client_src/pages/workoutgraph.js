@@ -24,9 +24,6 @@ export async function getStaticProps() {
 }
 
 const events = [];
-const w = [];
-let d = [];
-let wo = [];
 let clickedSubmit = false;
 
 export default function workoutgraph({ props }) {
@@ -35,10 +32,10 @@ export default function workoutgraph({ props }) {
     const router = useRouter();
     const [workouts, setWorkouts] = useState(events);
     const [userSelectedWorkout, setUserSelectedWorkout] = useState("");
-    const [selectedWorkouts, setSelectedWorkouts] = useState(w);
-    const [dates, setDates] = useState(d);
-    const [weights, setWeights] = useState(wo)
-    const [counter, setCounter] = useState(0);
+    const [selectedWorkouts, setSelectedWorkouts] = useState([]);
+    const [dates, setDates] = useState([]);
+    const [weights, setWeights] = useState([]);
+    // const [counter, setCounter] = useState(0);
 
     useEffect(() => {
         if (router.isReady) {
@@ -93,10 +90,8 @@ export default function workoutgraph({ props }) {
     function handleSubmit(e) {
         clickedSubmit = true;
         e.preventDefault();
-        // findWorkouts();
-        // sortWorkouts();
-        console.log(e.target.value);
-        setCounter(counter + 1);
+        findWorkouts();
+        sortWorkouts();
     }
 
     let option = {
@@ -116,11 +111,9 @@ export default function workoutgraph({ props }) {
     };
 
     useEffect(() => {
-        if (clickedSubmit) {
-            findWorkouts();
-            sortWorkouts();
-        }
-    }, [counter]);
+        findWorkouts();
+        sortWorkouts();
+    }, [userSelectedWorkout]);
 
     return (
         <div>
@@ -153,67 +146,3 @@ export default function workoutgraph({ props }) {
         </div>
     )
 }
-
-// class workOutEcharts extends Component {
-//     constructor(props){
-//         super(props);
-//         this.state = {
-//             date: [],
-//             weight: [],
-//             name:""
-//         };
-//     }
-
-//     usersWorkoutDate = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-//     usersWorkoutweight = [520, 932, 901, 1934, 1290, 1330, 2000];
-//     username = "Tom";
-
-//     componentDidMount() {
-//         this.setState(
-//             {
-//                 date: this.usersWorkoutDate,//should be connected with back-end(users' workout date)
-//                 weight: this.usersWorkoutweight,//should be connected with back-end(users' used weight)
-//                 name: this.username //should be connected with back-end(users' name)
-//             }
-//         )
-//     };
-
-//     getOption=(date,weight)=>{
-//         return{
-//             xAxis: {
-//                 type: 'category',
-//                 data: date
-//             },
-//             yAxis: {
-//                 type: 'value'
-//             },
-//             series: [{
-//                 data: weight,
-//                 type: 'line'
-//             }]
-//         };
-//     }
-
-//     render() {
-//         const{date} = this.state;
-//         const{weight} = this.state;
-//         const{name} = this.state;
-//         return (
-//             <div>
-//                 <Navbar bg="dark" variant="dark">
-//                     <Container fluid>
-//                         <Navbar.Brand href="#">
-//                             <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
-//                         </Navbar.Brand>
-//                     </Container>
-//                 </Navbar>
-//                 <div className="graph">
-//                     <h1 align={"center"}>{name}'s Workout Progress graph</h1>
-//                     <ReactEcharts option={this.getOption(date,weight)} />
-//                 </div>
-//             </div>
-//         );
-//     }
-// }
-
-// export default workOutEcharts;
