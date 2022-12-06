@@ -113,7 +113,7 @@ export default function nutritionGraph({ props }) {
                 <Container>
                     <strong>Select a date to see meal chart: </strong>
                     <Row>
-                        <Col xs={4}>
+                        <Col xs={2}>
                             <Form.Group className="mb-3" controlId="date">
                                 <Form.Label>Date:</Form.Label>
                                 <Form.Control type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
