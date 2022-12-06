@@ -34,6 +34,7 @@ export default function nutritionGraph({ props }) {
     const [selectedDate, setSelectedDate] = useState(new Date());
     let date = Date.parse(selectedDate);
     let strDate = new Date(date).toLocaleDateString();
+    const [totalCalories, setTotalCalories] = useState(0);
 
     function dateChange(){
         date = Date.parse(selectedDate);
@@ -48,26 +49,31 @@ export default function nutritionGraph({ props }) {
 
             const mealname_buf = [];
             const piedata_buf = [];
+            setTotalCalories(0);
+            let cal = 0;
 
             for (let i = 0; i < nutritionData.length; i++) {
-                console.log(moment(nutritionData[i][1].date).format("YYYY/MM/DD"));
-                console.log(moment(selectedDate).format("YYYY/MM/DD"));
+                // console.log(moment(nutritionData[i][1].date).format("YYYY/MM/DD"));
+                // console.log(moment(selectedDate).format("YYYY/MM/DD"));
                 if (nutritionData[i][1].username == router.query.username && moment(nutritionData[i][1].date).format("YYYY/MM/DD") == moment(selectedDate).format("YYYY/MM/DD")) {
                     const one_usermeals = nutritionData[i][1].meals;
                     for(let j=0; j < one_usermeals.length; j++){
                         
                         const permealData = Object.entries(one_usermeals[j]);
+                        // console.log(permealData);
 
 
                         const oneMealData={}
                         oneMealData.name = permealData[0][1];
                         oneMealData.value = parseInt(permealData[1][1]);
-                        
+                        console.log(totalCalories);
+                        cal += parseInt(permealData[1][1]);
                         piedata_buf.push(oneMealData);
                         mealname_buf.push(permealData[0][1]);
                     }
                     setMealName(mealname_buf);
                     setPieData(piedata_buf);
+                    setTotalCalories(cal);
                 }
             }
         }
@@ -120,6 +126,7 @@ export default function nutritionGraph({ props }) {
                             </Form.Group>
                         </Col>
                     </Row>
+                    <strong>Total Calories Eaten: </strong>{totalCalories}
                 </Container>
             </Form>
 

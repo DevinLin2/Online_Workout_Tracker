@@ -62,6 +62,9 @@ export default function Popup({
                                 <Form.Control type="date" value={moment(newMeal.date).format("YYYY-MM-DD")} onChange={(e) => setNewMeal({ ...newMeal, date: e.target.value })} />
                             </Form.Group>
                         </Row>
+                        <div class="mb-4">
+                            <hr class="solid"/>
+                        </div>
                         {meals.map((input, index) => {
                             return (
                                 <Row key={index}>
@@ -101,31 +104,34 @@ export default function Popup({
                 <Form>
                     <Container>
                         <Row>
-                            <Col xs={6}>
+                            <Col xs={3}>
                                 <Form.Group className="mb-3" controlId="title">
                                     <Form.Label>Workout name:</Form.Label>
                                     <Form.Control type="text" placeholder="Enter workout name..." value={newWorkout.title} onChange={(e) => setNewWorkout({ ...newWorkout, title: e.target.value })} />
                                 </Form.Group>
                             </Col>
-                            <Col xs={2}>
+                            <Col xs={3}>
                                 <Form.Group className="mb-3" controlId="date">
                                     <Form.Label>Date:</Form.Label>
                                     <Form.Control type="date" value={moment(newWorkout.date).format("YYYY-MM-DD")} onChange={(e) => setNewWorkout({ ...newWorkout, date: e.target.value })} />
                                 </Form.Group>
                             </Col>
-                            <Col xs={2}>
+                            <Col xs={3}>
                                 <Form.Group className="mb-3" controlId="startTime">
                                     <Form.Label>Start Time:</Form.Label>
                                     <Form.Control type="time" value={newWorkout.startTime} onChange={(e) => setNewWorkout({ ...newWorkout, startTime: e.target.value })} />
                                 </Form.Group>
                             </Col>
-                            <Col xs={2}>
+                            <Col xs={3}>
                                 <Form.Group className="mb-3" controlId="endTime">
                                     <Form.Label>End Time:</Form.Label>
                                     <Form.Control type="time" value={newWorkout.endTime} onChange={(e) => setNewWorkout({ ...newWorkout, endTime: e.target.value })} />
                                 </Form.Group>
                             </Col>
                         </Row>
+                        <div class="mb-4">
+                            <hr class="solid"/>
+                        </div>
                         {newExercise.map((input, index) => {
                             return (
                                 <Row key={index}>
