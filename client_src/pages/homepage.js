@@ -639,13 +639,13 @@ export default function Homepage({ props }) {
             </Head>
             <Navbar bg="dark" variant="dark">
                 <Container fluid>
-                    <Navbar.Brand href="#">
+                    <Navbar.Brand href={'/homepage?username=' + router.query.username}>
                         <FontAwesomeIcon icon={faDumbbell} /> Workout Tracker
                     </Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link href={'/workoutgraph?username=' + username}>Workout graph</Nav.Link>
-                        <Nav.Link href={'/nutritiongraph?username=' + username}>Nutrition graph</Nav.Link>
-                        <Nav.Link href="/login">Log out</Nav.Link>
+                        <Nav.Link href={'/workoutgraph?username=' + username}>Workout Graph</Nav.Link>
+                        <Nav.Link href={'/nutritiongraph?username=' + username}>Nutrition Graph</Nav.Link>
+                        <Nav.Link href="/login">Log Out</Nav.Link>
                     </Nav>
                     <ButtonGroup aria-label="formButtoms">
                         <Button variant="info" onClick={handleMealFormShow}>

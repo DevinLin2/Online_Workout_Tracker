@@ -22,6 +22,7 @@ export async function getStaticProps() {
 }
 
 export default function Login({ props }) {
+    // console.log(props);
     const [state, setState] = useState({ username: "", password: "" });
     const router = useRouter();
     const importedProps = Object.entries(props);
@@ -29,6 +30,7 @@ export default function Login({ props }) {
 
     function handleLogin(e) {
         e.preventDefault();
+        let auth = false;
         if (state.username && state.password) {
             for (let i = 0; i < importedProps.length; i++) {
                 if (state.username == importedProps[i][1].username && state.password == importedProps[i][1].password) {
@@ -37,7 +39,11 @@ export default function Login({ props }) {
                         pathname: '/homepage',
                         query: { username: state.username },
                     });
+                    auth = true;
                 }
+            }
+            if (!auth) {
+                alert("Incorrect username or password");
             }
         } else {
             alert("Please enter a username and password");
@@ -89,9 +95,9 @@ export default function Login({ props }) {
                         <button className="loginBtn" onClick={(e) => { handleLogin(e); }}>Login</button>
                     </div>
                     <Link href="/register">Register</Link>
-                    <div className="float-end">
+                    {/* <div className="float-end">
                         <Link href="/homepage">Continue as guest</Link>
-                    </div>
+                    </div> */}
                 </form>
             </div>
         </div>
