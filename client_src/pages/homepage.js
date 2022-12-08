@@ -652,7 +652,7 @@ export default function Homepage({ props }) {
                             Create Meal Log
                         </Button>
                         <Button variant="primary" onClick={handleWorkoutFormShow}>
-                            Create Workout
+                            Create Workout Log
                         </Button>
                     </ButtonGroup>
                 </Container>
